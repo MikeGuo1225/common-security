@@ -4,6 +4,8 @@ import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.enums.LoginType;
 
 /**
+ * 浏览器的一些配置
+ *
  * @author chentongwei@bshf360.com 2018-03-26 11:20
  */
 public class BrowserProperties {

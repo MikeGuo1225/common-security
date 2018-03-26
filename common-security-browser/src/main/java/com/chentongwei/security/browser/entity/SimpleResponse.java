@@ -1,6 +1,8 @@
 package com.chentongwei.security.browser.entity;
 
 /**
+ * 封装返回的JSON格式
+ *
  * @author chentongwei@bshf360.com 2018-03-26 11:31
  */
 public class SimpleResponse {

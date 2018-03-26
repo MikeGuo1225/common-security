@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
+ * 登录控制器
+ *
  * @author chentongwei@bshf360.com 2018-03-26 11:14
  */
 @RestController
@@ -43,9 +45,11 @@ public class BrowserSecutityController {
         if (Objects.equals(securityProperties.getBrowser().getLoginType(), LoginType.REDIRECT)) {
             logger.info("跳转到了【{}】", securityProperties.getBrowser().getLoginPage());
             redirectStrategy.sendRedirect(request, response, securityProperties.getBrowser().getLoginPage());
+        } else {
+            // JSON
+            logger.info("返回的是状态码401的JSON");
+            return new SimpleResponse(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase(), null);
         }
-        // JSON
-        logger.info("返回的是状态码401的JSON");
-        return new SimpleResponse(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase(), null);
+        return null;
     }
 }
