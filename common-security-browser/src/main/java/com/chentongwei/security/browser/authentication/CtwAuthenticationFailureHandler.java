@@ -40,10 +40,8 @@ public class CtwAuthenticationFailureHandler extends SimpleUrlAuthenticationFail
 
         if (Objects.equals(securityProperties.getBrowser().getLoginType(), LoginType.JSON)) {
             response.setContentType("application/json;charset=UTF-8");
-            // TODO 用户名密码错误
             response.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage(), null)));
         } else {
-            // TODO 跳转到自定义的用户名密码错误页面
             super.onAuthenticationFailure(request, response, exception);
         }
 

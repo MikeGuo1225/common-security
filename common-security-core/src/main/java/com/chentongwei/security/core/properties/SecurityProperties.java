@@ -1,5 +1,6 @@
 package com.chentongwei.security.core.properties;
 
+import com.chentongwei.security.core.properties.code.ValidateCodeProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -13,6 +14,8 @@ public class SecurityProperties {
     private BrowserProperties browser = new BrowserProperties();
 
     private AuthorizeProperties authorize = new AuthorizeProperties();
+
+    private ValidateCodeProperties code = new ValidateCodeProperties();
 
     public BrowserProperties getBrowser() {
         return browser;
@@ -28,5 +31,13 @@ public class SecurityProperties {
 
     public void setAuthorize(AuthorizeProperties authorize) {
         this.authorize = authorize;
+    }
+
+    public ValidateCodeProperties getCode() {
+        return code;
+    }
+
+    public void setCode(ValidateCodeProperties code) {
+        this.code = code;
     }
 }
