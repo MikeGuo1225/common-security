@@ -48,8 +48,8 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 
     @Override
     public void validate(ServletWebRequest request) {
-        ValidateCodeType validateCodeType = getValidateCodeType(request);
-        String sessionKey = getSessionKey(request);
+        ValidateCodeType validateCodeType = getValidateCodeType();
+        String sessionKey = getSessionKey();
 
         C codeInSession = (C) sessionStrategy.getAttribute(request, sessionKey);
 
@@ -96,7 +96,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
      * @return
      */
     private C generate(ServletWebRequest request) {
-        String type = getValidateCodeType(request).toString().toLowerCase();
+        String type = getValidateCodeType().toString().toLowerCase();
         String generatorName = type + ValidateCodeGenerator.class.getSimpleName();
         ValidateCodeGenerator validateCodeGenerator = validateCodeGenerators.get(generatorName);
         if (null == validateCodeGenerator) {
@@ -112,26 +112,24 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
      * @param validateCode：验证码
      */
     private void save(ServletWebRequest request, C validateCode) {
-        sessionStrategy.setAttribute(request, getSessionKey(request), validateCode);
+        sessionStrategy.setAttribute(request, getSessionKey(), validateCode);
     }
 
     /**
      * 获取sessionKey
      *
-     * @param request：请求
      * @return
      */
-    private String getSessionKey(ServletWebRequest request) {
-        return SecurityConstant.SESSION_KEY_PREFIX + getValidateCodeType(request).toString().toUpperCase();
+    private String getSessionKey() {
+        return SecurityConstant.SESSION_KEY_PREFIX + getValidateCodeType().toString().toUpperCase();
     }
 
     /**
      * 根据请求的Url获取验证码的类型
      *
-     * @param request：请求
      * @return
      */
-    private ValidateCodeType getValidateCodeType(ServletWebRequest request) {
+    private ValidateCodeType getValidateCodeType() {
         String type = StringUtils.substringBefore(getClass().getSimpleName(), "CodeProcessor");
         return ValidateCodeType.valueOf(type.toUpperCase());
     }
