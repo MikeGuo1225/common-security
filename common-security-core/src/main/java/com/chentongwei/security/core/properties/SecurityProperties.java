@@ -12,11 +12,21 @@ public class SecurityProperties {
 
     private BrowserProperties browser = new BrowserProperties();
 
+    private AuthorizeProperties authorize = new AuthorizeProperties();
+
     public BrowserProperties getBrowser() {
         return browser;
     }
 
     public void setBrowser(BrowserProperties browser) {
         this.browser = browser;
+    }
+
+    public AuthorizeProperties getAuthorize() {
+        return authorize;
+    }
+
+    public void setAuthorize(AuthorizeProperties authorize) {
+        this.authorize = authorize;
     }
 }

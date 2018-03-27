@@ -3,13 +3,14 @@ package com.chentongwei.security.browser.config;
 import com.chentongwei.security.core.authentication.AbstractChannelSecurityConfig;
 import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.properties.SecurityProperties;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * 浏览器的安全配置
@@ -30,9 +31,7 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
         .authorizeRequests()
              // 任何请求都必须经过身份认证，排除如下
             .antMatchers(
-                    SecurityConstant.DEFAULT_LOGIN_PAGE_URL,
-                    SecurityConstant.DEFAULT_UNAUTHENTICATION_URL,
-                    securityProperties.getBrowser().getLoginPage()
+                    getPermitUrls()
             ).permitAll()
              // 任何请求
             .anyRequest()
@@ -44,15 +43,20 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
     }
 
     /**
-     * 加密用的
-     *
-     * 默认注册一个加密bean
-     * 这样在MyUserDetailsService里才能用PasswordEncoder
-     *
+     * 获取所有的无需权限即可访问的urls
      * @return
      */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    private String[] getPermitUrls() {
+        List<String> urls = new LinkedList<>();
+        String permitUrls = securityProperties.getAuthorize().getPermitUrls();
+        if (StringUtils.isNotEmpty(permitUrls) && StringUtils.isNotBlank(permitUrls)) {
+            String[] urlArray = StringUtils.splitByWholeSeparator(permitUrls, ",");
+            urls = new LinkedList<>(Arrays.asList(urlArray));
+        }
+
+        urls.add(SecurityConstant.DEFAULT_LOGIN_PAGE_URL);
+        urls.add(SecurityConstant.DEFAULT_UNAUTHENTICATION_URL);
+        urls.add(securityProperties.getBrowser().getLoginPage());
+        return urls.toArray(new String[urls.size()]);
     }
 }

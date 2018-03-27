@@ -20,5 +20,5 @@ public interface SecurityConstant {
     /**
      * 默认的登录接口
      */
-    String DEFAULT_LOGIN_PROCESSING_URL_FORM = "/authentication/form";
+    String DEFAULT_LOGIN_PROCESSING_URL_FORM = "/login";
 }
