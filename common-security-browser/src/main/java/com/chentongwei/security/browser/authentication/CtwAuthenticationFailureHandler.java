@@ -42,6 +42,7 @@ public class CtwAuthenticationFailureHandler extends SimpleUrlAuthenticationFail
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage(), null)));
         } else {
+            response.setContentType("text/html;charset=UTF-8");
             super.onAuthenticationFailure(request, response, exception);
         }
 
