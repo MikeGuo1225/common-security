@@ -27,6 +27,11 @@ public class Application {
         return "hello spring security";
     }
 
+    @GetMapping("/hello2")
+    public String hello2() {
+        return "hello spring security";
+    }
+
     @Autowired
     private MyUserDetailsService userDetailsService;
 

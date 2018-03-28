@@ -5,6 +5,8 @@ import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.enums.ValidateCodeType;
 import com.chentongwei.security.core.exception.ValidateCodeException;
 import com.chentongwei.security.core.properties.SecurityProperties;
+import com.chentongwei.security.core.util.HttpRequestUtil;
+import com.chentongwei.security.core.validate.entity.IPUrlLimit;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +77,56 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         logger.info(JSON.toJSONString(urlMap));
     }
 
+
+    private static Map<String, IPUrlLimit> countMap = new HashMap<>();
+
+    String urlString = "/hello,/hello2";
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        String[] urls = StringUtils.splitByWholeSeparatorPreserveAllTokens(urlString, ",");
+
+        String remoteAddr = HttpRequestUtil.getIpAddr(request);
+
+        String requestURI = request.getRequestURI();
+
+        for (String url : urls) {
+            String countKey = remoteAddr + ":" + url;
+            logger.info("countKey：" + countKey);
+        }
+
+
+        String countKey = remoteAddr + ":" + requestURI;
+        logger.info("countKey：" + countKey);
+
+        if (countMap.containsKey(countKey)) {
+            IPUrlLimit ipUrlLimit = countMap.get(countKey);
+            ipUrlLimit.setCount(countMap.get(countKey).getCount() + 1);
+            countMap.put(countKey, ipUrlLimit);
+        } else {
+            countMap.put(countKey, new IPUrlLimit(0, 30));
+        }
+
+        if (countMap.get(countKey).isExpired()) {
+            logger.info("countMap超时，重新计算count");
+            countMap.remove(countKey);
+        } else {
+            logger.info("count: " + countMap.get(countKey).getCount());
+            if (countMap.get(countKey).getCount() > 5) {
+                logger.info("验证码走一波！key为：" + countKey);
+                try {
+                    validateCodeProcessorHolder.findValidateCodeProcessor(ValidateCodeType.IMAGE).validate(new ServletWebRequest(request, response));
+                    logger.info("校验码校验通过");
+                } catch (ValidateCodeException ex) {
+                    authenticationFailureHandler.onAuthenticationFailure(request, response, ex);
+                    return;
+                }
+            }
+        }
+
+
+
         ValidateCodeType type = getValidateCodeType(request);
         if (null != type) {
             logger.info("校验请求(" + request.getRequestURI() + ")中的验证码，验证码类型" + type);
