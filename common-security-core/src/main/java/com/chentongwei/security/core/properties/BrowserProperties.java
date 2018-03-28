@@ -20,6 +20,12 @@ public class BrowserProperties {
      */
     private String loginPage = SecurityConstant.DEFAULT_LOGIN_PAGE_URL;
 
+    /**
+     * 记住我时长
+     */
+    private int rememberMeSeconds = 3600;
+
+
     public LoginType getLoginType() {
         return loginType;
     }
@@ -34,5 +40,13 @@ public class BrowserProperties {
 
     public void setLoginPage(String loginPage) {
         this.loginPage = loginPage;
+    }
+
+    public int getRememberMeSeconds() {
+        return rememberMeSeconds;
+    }
+
+    public void setRememberMeSeconds(int rememberMeSeconds) {
+        this.rememberMeSeconds = rememberMeSeconds;
     }
 }

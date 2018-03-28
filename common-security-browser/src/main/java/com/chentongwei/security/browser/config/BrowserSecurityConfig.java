@@ -7,9 +7,14 @@ import com.chentongwei.security.core.properties.SecurityProperties;
 import com.chentongwei.security.core.validate.code.ValidateCodeSecurityConfig;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,21 +27,44 @@ import java.util.List;
 @Configuration
 public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
+    /**
+     * 系统配置
+     */
     @Autowired
     private SecurityProperties securityProperties;
 
+    /**
+     * 验证码
+     */
     @Autowired
     private ValidateCodeSecurityConfig validateCodeSecurityConfig;
-
     @Autowired
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
+    /**
+     * 记住我
+     */
+    // 记住我数据源（使用者配置的）
+    @Autowired
+    private DataSource dataSource;
+    // 记住我自动登录需要用到
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // 表单登录以及成功/失败处理
         authenticationConfig(http);
+        // 验证码（image+sms）
         http.apply(validateCodeSecurityConfig)
                 .and()
             .apply(smsCodeAuthenticationSecurityConfig)
+                .and()
+            // 记住我
+            .rememberMe()
+                .tokenRepository(persistentTokenRepository())
+                .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
+                .userDetailsService(userDetailsService)
                 .and()
              // 权限设置
             .authorizeRequests()
@@ -71,5 +99,13 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
         urls.add(SecurityConstant.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*");
         urls.add(securityProperties.getBrowser().getLoginPage());
         return urls.toArray(new String[urls.size()]);
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+//        tokenRepository.setCreateTableOnStartup(true);
+        return tokenRepository;
     }
 }
