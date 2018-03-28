@@ -4,16 +4,12 @@ import com.chentongwei.security.browser.entity.SimpleResponse;
 import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.enums.LoginType;
 import com.chentongwei.security.core.properties.SecurityProperties;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
-import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,11 +24,9 @@ import java.util.Objects;
  * @author chentongwei@bshf360.com 2018-03-26 11:14
  */
 @RestController
-public class BrowserSecutityController {
+public class BrowserSecurityController {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
-
-    private RequestCache requestCache = new HttpSessionRequestCache();
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 

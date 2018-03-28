@@ -1,6 +1,7 @@
 package com.chentongwei.security.core.validate.image;
 
 import com.chentongwei.security.core.validate.code.AbstractValidateCodeProcessor;
+import com.chentongwei.security.core.validate.image.ImageCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
 
