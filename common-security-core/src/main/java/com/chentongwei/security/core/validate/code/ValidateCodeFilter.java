@@ -55,6 +55,16 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     private Map<String, ValidateCodeType> urlMap = new HashMap<>();
 
     /**
+     * 存放ip访问url次数
+     */
+    private static Map<String, IPUrlLimit> countMap = new HashMap<>();
+
+    /**
+     * ip一段时间内访问url多少次数后弹出验证码的url
+     */
+    private String ipValidateUrl;
+
+    /**
      * 验证请求url与配置的url是否匹配的工具类
      */
     private AntPathMatcher pathMatcher = new AntPathMatcher();
@@ -74,59 +84,14 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         urlMap.put(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_MOBILE, ValidateCodeType.SMS);
         addUrlToMap(securityProperties.getCode().getSms().getUrl(), ValidateCodeType.SMS);
 
-        logger.info(JSON.toJSONString(urlMap));
+        ipValidateUrl = securityProperties.getAuthorize().getIpValidateUrl();
+
+        logger.info("urlMap：" + JSON.toJSONString(urlMap));
+        logger.info("ipValidateUrl：" + ipValidateUrl);
     }
-
-
-    private static Map<String, IPUrlLimit> countMap = new HashMap<>();
-
-    String urlString = "/hello,/hello2";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-        String[] urls = StringUtils.splitByWholeSeparatorPreserveAllTokens(urlString, ",");
-
-        String remoteAddr = HttpRequestUtil.getIpAddr(request);
-
-        String requestURI = request.getRequestURI();
-
-        for (String url : urls) {
-            String countKey = remoteAddr + ":" + url;
-            logger.info("countKey：" + countKey);
-        }
-
-
-        String countKey = remoteAddr + ":" + requestURI;
-        logger.info("countKey：" + countKey);
-
-        if (countMap.containsKey(countKey)) {
-            IPUrlLimit ipUrlLimit = countMap.get(countKey);
-            ipUrlLimit.setCount(countMap.get(countKey).getCount() + 1);
-            countMap.put(countKey, ipUrlLimit);
-        } else {
-            countMap.put(countKey, new IPUrlLimit(0, 30));
-        }
-
-        if (countMap.get(countKey).isExpired()) {
-            logger.info("countMap超时，重新计算count");
-            countMap.remove(countKey);
-        } else {
-            logger.info("count: " + countMap.get(countKey).getCount());
-            if (countMap.get(countKey).getCount() > 5) {
-                logger.info("验证码走一波！key为：" + countKey);
-                try {
-                    validateCodeProcessorHolder.findValidateCodeProcessor(ValidateCodeType.IMAGE).validate(new ServletWebRequest(request, response));
-                    logger.info("校验码校验通过");
-                } catch (ValidateCodeException ex) {
-                    authenticationFailureHandler.onAuthenticationFailure(request, response, ex);
-                    return;
-                }
-            }
-        }
-
-
-
         ValidateCodeType type = getValidateCodeType(request);
         if (null != type) {
             logger.info("校验请求(" + request.getRequestURI() + ")中的验证码，验证码类型" + type);
@@ -137,6 +102,11 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
                 authenticationFailureHandler.onAuthenticationFailure(request, response, ex);
                 return;
             }
+        }
+        // 检查ip访问url次数限制
+        boolean visitCountFlag = visitCountValidate(request, response);
+        if (! visitCountFlag) {
+            return;
         }
         filterChain.doFilter(request, response);
     }
@@ -173,5 +143,42 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
             }
         }
         return result;
+    }
+
+    /**
+     * 检查ip访问url次数限制
+     *
+     * @param request：请求
+     * @param response：响应
+     */
+    private boolean visitCountValidate(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String requestURI = request.getRequestURI();
+
+        if (StringUtils.isNotBlank(ipValidateUrl) && ipValidateUrl.indexOf(requestURI) != -1) {
+            String ipAddr = HttpRequestUtil.getIpAddr(request);
+            String countKey = ipAddr + ":" + requestURI;
+            logger.info("countKey：" + countKey);
+            if (null != countMap.get(countKey) && countMap.get(countKey).isExpired()) {
+                logger.info("countMap超时，重新计算count");
+                countMap.remove(countKey);
+            }
+            if (countMap.containsKey(countKey)) {
+                countMap.put(countKey, countMap.get(countKey).count(1));
+            } else {
+                countMap.put(countKey, new IPUrlLimit(securityProperties.getAuthorize().getIpValidateSeconds()));
+            }
+
+            logger.info("count: " + countMap.get(countKey).getCount());
+            if (countMap.get(countKey).getCount() > securityProperties.getAuthorize().getIpValidateCount()) {
+                logger.info("验证码走一波！key为：" + countKey);
+                try {
+                    throw new ValidateCodeException("您访问的太快啦，休息几秒钟吧！");
+                } catch (ValidateCodeException ex) {
+                    authenticationFailureHandler.onAuthenticationFailure(request, response, ex);
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

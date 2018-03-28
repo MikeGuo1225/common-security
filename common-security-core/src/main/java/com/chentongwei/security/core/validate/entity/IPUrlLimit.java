@@ -19,9 +19,18 @@ public class IPUrlLimit {
      */
     private LocalDateTime localDateTime;
 
+    public IPUrlLimit(int expireIn) {
+        this(1, expireIn);
+    }
+
     public IPUrlLimit(int count, int expireIn) {
         this.count = count;
         this.localDateTime = LocalDateTime.now().plusSeconds(expireIn);
+    }
+
+    public IPUrlLimit count(int count) {
+        setCount(count);
+        return this;
     }
 
     public boolean isExpired() {
@@ -33,7 +42,7 @@ public class IPUrlLimit {
     }
 
     public void setCount(int count) {
-        this.count = count;
+        this.count = getCount() + count;
     }
 
     public LocalDateTime getLocalDateTime() {
