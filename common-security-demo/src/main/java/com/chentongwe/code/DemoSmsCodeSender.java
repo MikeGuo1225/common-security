@@ -1,4 +1,4 @@
-package com.chentongwei.code;
+package com.chentongwe.code;
 
 import com.chentongwei.security.core.validate.sms.SmsCodeSender;
 import org.springframework.stereotype.Component;

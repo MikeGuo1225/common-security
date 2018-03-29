@@ -1,6 +1,5 @@
 package com.chentongwei.security.core.validate.code;
 
-import com.alibaba.fastjson.JSON;
 import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.enums.ValidateCodeType;
 import com.chentongwei.security.core.exception.ValidateCodeException;
@@ -86,7 +85,6 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 
         ipValidateUrl = securityProperties.getAuthorize().getIpValidateUrl();
 
-        logger.info("urlMap：" + JSON.toJSONString(urlMap));
         logger.info("ipValidateUrl：" + ipValidateUrl);
     }
 

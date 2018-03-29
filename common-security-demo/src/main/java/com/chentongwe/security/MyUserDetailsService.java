@@ -1,4 +1,4 @@
-package com.chentongwei.security;
+package com.chentongwe.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,7 @@ public class MyUserDetailsService implements UserDetailsService {
          */
         String password = passwordEncoder.encode("123456");
         logger.info("数据库密码是：" + password);
-        // TODO 这个User不一定必须用SpringSecurity的，可以写一个自定义实现UserDetails接口的类，然后把是否锁定等判断逻辑写进去。
+        // 这个User不一定必须用SpringSecurity的，可以写一个自定义实现UserDetails接口的类，然后把是否锁定等判断逻辑写进去。
         return new User(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
 
     }

@@ -1,6 +1,6 @@
-package com.chentongwei.web;
+package com.chentongwe.web;
 
-import com.chentongwei.security.MyUserDetailsService;
+import com.chentongwe.security.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestMapping;

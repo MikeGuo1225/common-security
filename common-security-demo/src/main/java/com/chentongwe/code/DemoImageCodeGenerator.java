@@ -1,4 +1,4 @@
-package com.chentongwei.code;
+package com.chentongwe.code;
 
 import com.chentongwei.security.core.validate.code.ValidateCode;
 import com.chentongwei.security.core.validate.code.ValidateCodeGenerator;

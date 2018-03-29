@@ -1,9 +1,10 @@
-package com.chentongwei;
+package com.chentongwe;
 
-import com.chentongwei.security.MyUserDetailsService;
+import com.chentongwe.security.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author chentongwei@bshf360.com 2018-03-26 10:26
  */
+@ComponentScan(basePackages = {"com.chentongwe", "com.chentongwei"})
 @SpringBootApplication
 @RestController
 public class Application {
