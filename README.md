@@ -12,5 +12,5 @@
 
 **详细说明文档**
 
-[说明文档]: https://geekerdream.gitbooks.io/common-security/content/	"Common-Security说明文档"
+https://geekerdream.gitbooks.io/common-security/content/
 
