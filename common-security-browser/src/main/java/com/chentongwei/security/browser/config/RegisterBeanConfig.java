@@ -25,4 +25,5 @@ public class RegisterBeanConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

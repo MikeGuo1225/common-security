@@ -3,7 +3,7 @@
     <parent>
         <artifactId>common-security</artifactId>
         <groupId>com.chentongwei</groupId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>com.chentongwei</groupId>
             <artifactId>common-security-browser</artifactId>
-            <version>${common.security.version}</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,6 +1,8 @@
 package com.chentongwei.security.core.validate.code;
 
+import com.alibaba.fastjson.JSON;
 import com.chentongwei.security.core.constant.SecurityConstant;
+import com.chentongwei.security.core.entity.SimpleResponse;
 import com.chentongwei.security.core.enums.ValidateCodeType;
 import com.chentongwei.security.core.exception.ValidateCodeException;
 import com.chentongwei.security.core.properties.SecurityProperties;
@@ -85,6 +87,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 
         ipValidateUrl = securityProperties.getAuthorize().getIpValidateUrl();
 
+        logger.info("urlMap：" + JSON.toJSONString(urlMap));
         logger.info("ipValidateUrl：" + ipValidateUrl);
     }
 
@@ -169,12 +172,9 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
             logger.info("count: " + countMap.get(countKey).getCount());
             if (countMap.get(countKey).getCount() > securityProperties.getAuthorize().getIpValidateCount()) {
                 logger.info("验证码走一波！key为：" + countKey);
-                try {
-                    throw new ValidateCodeException("您访问的太快啦，休息几秒钟吧！");
-                } catch (ValidateCodeException ex) {
-                    authenticationFailureHandler.onAuthenticationFailure(request, response, ex);
-                    return false;
-                }
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().print(JSON.toJSONString(new SimpleResponse(1001, "您访问的太快啦，休息几秒钟吧！", null)));
+                return false;
             }
         }
         return true;

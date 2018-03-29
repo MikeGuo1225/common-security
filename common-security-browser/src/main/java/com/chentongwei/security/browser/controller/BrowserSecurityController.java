@@ -1,7 +1,7 @@
 package com.chentongwei.security.browser.controller;
 
-import com.chentongwei.security.browser.entity.SimpleResponse;
 import com.chentongwei.security.core.constant.SecurityConstant;
+import com.chentongwei.security.core.entity.SimpleResponse;
 import com.chentongwei.security.core.enums.LoginType;
 import com.chentongwei.security.core.properties.SecurityProperties;
 import org.slf4j.Logger;

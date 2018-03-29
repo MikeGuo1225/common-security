@@ -1,9 +1,9 @@
 package com.chentongwei.security.browser.authentication;
 
-import com.chentongwei.security.browser.entity.SimpleResponse;
+import com.alibaba.fastjson.JSON;
+import com.chentongwei.security.core.entity.SimpleResponse;
 import com.chentongwei.security.core.enums.LoginType;
 import com.chentongwei.security.core.properties.SecurityProperties;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +32,6 @@ public class CtwAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private SecurityProperties securityProperties;
 
     @Override
@@ -42,7 +39,7 @@ public class CtwAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
         logger.info("登录成功！");
         if (ObjectUtils.equals(securityProperties.getBrowser().getLoginType(), LoginType.JSON)) {
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), authentication)));
+            response.getWriter().write(JSON.toJSONString(new SimpleResponse(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), authentication)));
         } else {
             // 会帮我们跳转到上一次请求的页面上
             super.onAuthenticationSuccess(request, response, authentication);
