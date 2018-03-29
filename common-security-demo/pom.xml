@@ -3,7 +3,7 @@
     <parent>
         <artifactId>common-security</artifactId>
         <groupId>com.chentongwei</groupId>
-        <version>1.0.0</version>
+        <version>1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -12,7 +12,7 @@
 
     <name>common-security-demo</name>
     <url>http://maven.apache.org</url>
-
+    <version>${common.security.version}</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>com.chentongwei</groupId>
             <artifactId>common-security-browser</artifactId>
-            <version>1.0.0</version>
+            <version>${common.security.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

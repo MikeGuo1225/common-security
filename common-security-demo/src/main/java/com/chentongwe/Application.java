@@ -4,19 +4,22 @@ import com.chentongwe.security.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  * @author chentongwei@bshf360.com 2018-03-26 10:26
  */
+@ServletComponentScan
 @ComponentScan(basePackages = {"com.chentongwe", "com.chentongwei"})
 @SpringBootApplication
 @RestController
-public class Application {
+public class Application  extends WebMvcConfigurerAdapter{
     /**
      * @param args
      */
@@ -43,4 +46,6 @@ public class Application {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return userDetails;
     }
+
+
 }
