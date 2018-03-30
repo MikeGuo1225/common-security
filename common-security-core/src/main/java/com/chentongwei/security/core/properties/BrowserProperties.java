@@ -21,6 +21,11 @@ public class BrowserProperties {
     private String loginPage = SecurityConstant.DEFAULT_LOGIN_PAGE_URL;
 
     /**
+     * 401状态码（未授权）所跳转的路径
+     */
+    private String unAuthorizedPage;
+
+    /**
      * 记住我时长
      */
     private int rememberMeSeconds = 3600;
@@ -48,5 +53,13 @@ public class BrowserProperties {
 
     public void setRememberMeSeconds(int rememberMeSeconds) {
         this.rememberMeSeconds = rememberMeSeconds;
+    }
+
+    public String getUnAuthorizedPage() {
+        return unAuthorizedPage;
+    }
+
+    public void setUnAuthorizedPage(String unAuthorizedPage) {
+        this.unAuthorizedPage = unAuthorizedPage;
     }
 }

@@ -4,6 +4,7 @@ import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.entity.SimpleResponse;
 import com.chentongwei.security.core.enums.LoginType;
 import com.chentongwei.security.core.properties.SecurityProperties;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,11 @@ public class BrowserSecurityController {
 
     @GetMapping(SecurityConstant.DEFAULT_UNAUTHENTICATION_URL)
     public SimpleResponse requireAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if (StringUtils.isNotBlank(securityProperties.getBrowser().getUnAuthorizedPage())) {
+            // 直接跳转到指定的未授权410页面
+            logger.info("跳转到了【{}】", securityProperties.getBrowser().getUnAuthorizedPage());
+            redirectStrategy.sendRedirect(request, response, securityProperties.getBrowser().getUnAuthorizedPage());
+        }
         // 跳转
         if (Objects.equals(securityProperties.getBrowser().getLoginType(), LoginType.REDIRECT)) {
             logger.info("跳转到了【{}】", securityProperties.getBrowser().getLoginPage());
