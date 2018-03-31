@@ -38,6 +38,11 @@ public interface SecurityConstant {
     String DEFAULT_PARAMETER_NAME_CODE_SMS = "smsCode";
 
     /**
+     * 验证极验证时，http请求中默认的携带极验证信息的参数的名称
+     */
+    String DEFAULT_PARAMETER_NAME_CODE_GEETEST = "geetestCode";
+
+    /**
      * 发送短信验证码 或 验证短信验证码时，传递手机号的参数的名称
      */
     String DEFAULT_PARAMETER_NAME_MOBILE = "mobile";

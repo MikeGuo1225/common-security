@@ -3,6 +3,8 @@ package com.chentongwei.security.core.validate.code;
 import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.enums.ValidateCodeType;
 import com.chentongwei.security.core.exception.ValidateCodeException;
+import com.chentongwei.security.core.validate.geetest.GeetestCode;
+import com.chentongwei.security.core.validate.verification.ValidateCodeVerificationFactory;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
@@ -51,34 +53,9 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
         ValidateCodeType validateCodeType = getValidateCodeType();
         String sessionKey = getSessionKey();
 
-        C codeInSession = (C) sessionStrategy.getAttribute(request, sessionKey);
-
-        String codeInRequest;
-
-        try {
-            codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), validateCodeType.getParamNameOnValidate());
-        } catch (ServletRequestBindingException e) {
-            throw new ValidateCodeException("获取验证码的值失败！");
-        }
-        if (StringUtils.isBlank(codeInRequest)) {
-            throw new ValidateCodeException(validateCodeType + "验证码的值不能为空");
-        }
-
-        if (codeInSession == null) {
-            throw new ValidateCodeException(validateCodeType + "验证码不存在，请刷新页面重试");
-        }
-
-        if (codeInSession.isExpired()) {
-            sessionStrategy.removeAttribute(request, sessionKey);
-            throw new ValidateCodeException(validateCodeType + "验证码已过期");
-        }
-
-        if (!StringUtils.equals(codeInSession.getCode(), codeInRequest)) {
-            sessionStrategy.removeAttribute(request, sessionKey);
-            throw new ValidateCodeException(validateCodeType + "验证码不匹配");
-        }
-
-        sessionStrategy.removeAttribute(request, sessionKey);
+        ValidateCodeVerificationFactory.getInstance().creator(validateCodeType.name())
+                .verification(this.sessionStrategy, request, sessionKey);
+        this.sessionStrategy.removeAttribute(request, sessionKey);
     }
 
     /**

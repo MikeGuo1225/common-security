@@ -2,6 +2,7 @@ package com.chentongwei.security.core.config;
 
 import com.chentongwei.security.core.properties.SecurityProperties;
 import com.chentongwei.security.core.validate.code.ValidateCodeGenerator;
+import com.chentongwei.security.core.validate.geetest.GeetestCodeGenerator;
 import com.chentongwei.security.core.validate.image.ImageCodeGenerator;
 import com.chentongwei.security.core.validate.sms.DefaultSmsCodeSender;
 import com.chentongwei.security.core.validate.sms.SmsCodeSender;
@@ -32,6 +33,19 @@ public class ValidateCodeBeanConfig {
         ImageCodeGenerator codeGenerator = new ImageCodeGenerator();
         codeGenerator.setSecurityProperties(securityProperties);
         return codeGenerator;
+    }
+
+    /**
+     * 极验证bean
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean(name = "geetestValidateCodeGenerator")
+    public ValidateCodeGenerator geetestValidateCodeGenerator() {
+        GeetestCodeGenerator geetestCodeGenerator = new GeetestCodeGenerator();
+        geetestCodeGenerator.setSecurityProperties(securityProperties);
+        return geetestCodeGenerator;
     }
 
     /**

@@ -11,6 +11,8 @@ public class ValidateCodeProperties {
 
     private SmsCodeProperties sms = new SmsCodeProperties();
 
+    private GeetestCodeProperties geetest = new GeetestCodeProperties();
+
     public ImageCodeProperties getImage() {
         return image;
     }
@@ -25,5 +27,13 @@ public class ValidateCodeProperties {
 
     public void setSms(SmsCodeProperties sms) {
         this.sms = sms;
+    }
+
+    public GeetestCodeProperties getGeetest() {
+        return geetest;
+    }
+
+    public void setGeetest(GeetestCodeProperties geetest) {
+        this.geetest = geetest;
     }
 }

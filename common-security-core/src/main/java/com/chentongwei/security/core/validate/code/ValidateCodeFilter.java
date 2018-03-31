@@ -84,6 +84,8 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         urlMap.put(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_MOBILE, ValidateCodeType.SMS);
         addUrlToMap(securityProperties.getCode().getSms().getUrl(), ValidateCodeType.SMS);
 
+        addUrlToMap(securityProperties.getCode().getGeetest().getUrl(), ValidateCodeType.GEETEST);
+
         ipValidateUrl = securityProperties.getAuthorize().getIpValidateUrl();
 
         logger.info("urlMap：" + JSON.toJSONString(urlMap));

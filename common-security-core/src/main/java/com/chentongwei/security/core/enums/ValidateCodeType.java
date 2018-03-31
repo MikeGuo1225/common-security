@@ -27,6 +27,16 @@ public enum ValidateCodeType {
         public String getParamNameOnValidate() {
             return SecurityConstant.DEFAULT_PARAMETER_NAME_CODE_SMS;
         }
+    },
+
+    /**
+     * 极验证
+     */
+    GEETEST {
+        @Override
+        public String getParamNameOnValidate() {
+            return SecurityConstant.DEFAULT_PARAMETER_NAME_CODE_GEETEST;
+        }
     };
 
     /**
