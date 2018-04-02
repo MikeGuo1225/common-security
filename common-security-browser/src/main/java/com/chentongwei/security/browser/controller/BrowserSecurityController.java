@@ -4,6 +4,7 @@ import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.entity.SimpleResponse;
 import com.chentongwei.security.core.enums.LoginType;
 import com.chentongwei.security.core.properties.SecurityProperties;
+import com.chentongwei.security.core.social.SocialUserInfo;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.web.ProviderSignInUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,6 +38,9 @@ public class BrowserSecurityController {
     @Autowired
     private SecurityProperties securityProperties;
 
+    @Autowired
+    private ProviderSignInUtils providerSignInUtils;
+
     @GetMapping(SecurityConstant.DEFAULT_UNAUTHENTICATION_URL)
     public SimpleResponse requireAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (StringUtils.isNotBlank(securityProperties.getBrowser().getUnAuthorizedPage())) {
@@ -52,5 +59,17 @@ public class BrowserSecurityController {
             }
         }
         return null;
+    }
+
+    @GetMapping("/social/user")
+    public SocialUserInfo getSocialUserInfo(HttpServletRequest request) {
+        SocialUserInfo userInfo = new SocialUserInfo();
+        // 跳转到注册页之前就已经放到了session里了，这是SpringSocial做的，可以debug看源码
+        Connection<?> connection = providerSignInUtils.getConnectionFromSession((new ServletWebRequest(request)));
+        userInfo.setProviderId(connection.getKey().getProviderId());
+        userInfo.setProviderUserId(connection.getKey().getProviderUserId());
+        userInfo.setNickname(connection.getDisplayName());
+        userInfo.setHeadimg(connection.getImageUrl());
+        return userInfo;
     }
 }

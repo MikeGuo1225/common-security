@@ -22,6 +22,11 @@ public class BrowserProperties {
     private String loginPage = SecurityConstant.DEFAULT_LOGIN_PAGE_URL;
 
     /**
+     * 默认注册页面
+     */
+    private String registerPage = SecurityConstant.DEFAULT_REGISTER_PAGE_URL;
+
+    /**
      * 401状态码（未授权）所跳转的路径
      */
     private String unAuthorizedPage;
@@ -50,6 +55,14 @@ public class BrowserProperties {
 
     public void setLoginPage(String loginPage) {
         this.loginPage = loginPage;
+    }
+
+    public String getRegisterPage() {
+        return registerPage;
+    }
+
+    public void setRegisterPage(String registerPage) {
+        this.registerPage = registerPage;
     }
 
     public int getRememberMeSeconds() {

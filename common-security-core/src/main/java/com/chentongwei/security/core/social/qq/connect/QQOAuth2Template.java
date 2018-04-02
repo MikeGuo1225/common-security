@@ -46,7 +46,11 @@ public class QQOAuth2Template extends OAuth2Template {
 
     public QQOAuth2Template(String clientId, String clientSecret, String authorizeUrl, String accessTokenUrl) {
         super(clientId, clientSecret, authorizeUrl, accessTokenUrl);
-        // 这样发请求的时候才会带上appId和appSecret
+        /**
+         * 这样发请求的时候才会带上appId和appSecret
+         *
+         * 详情请看OAuth2Template.exchangeForAccess()
+         */
         setUseParametersForClientAuthentication(true);
     }
 
@@ -82,6 +86,4 @@ public class QQOAuth2Template extends OAuth2Template {
         restTemplate.getMessageConverters().add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
         return restTemplate;
     }
-
-
 }
