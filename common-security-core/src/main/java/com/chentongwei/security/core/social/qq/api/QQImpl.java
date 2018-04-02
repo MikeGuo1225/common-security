@@ -17,14 +17,14 @@ public class QQImpl extends AbstractOAuth2ApiBinding implements QQ {
     /**
      * 获取OPENID的URL
      */
-    private static final String GET_OPENID_URL = "https://graph.social.com/oauth2.0/me?access_token=%s";
+    private static final String GET_OPENID_URL = "https://graph.qq.com/oauth2.0/me?access_token=%s";
 
     /**
      * 获取用户基本信息的URL
      * 为什么这里不需要accessToken了？QQ互联官网说需要的。
      * 因为父类AbstractOAuth2ApiBinding已经为我们拼接好了，所以这里无需管了
      */
-    private static final String GET_USERINFO_URL = "https://graph.social.com/user/get_user_info?oauth_consumer_key=%s&openid=%s";
+    private static final String GET_USERINFO_URL = "https://graph.qq.com/user/get_user_info?oauth_consumer_key=%s&openid=%s";
 
     /**
      * appId

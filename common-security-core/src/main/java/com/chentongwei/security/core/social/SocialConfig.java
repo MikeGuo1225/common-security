@@ -47,7 +47,6 @@ public class SocialConfig extends SocialConfigurerAdapter {
      */
     @Bean
     public SpringSocialConfigurer ctwSocialSecurityConfig() {
-        System.out.println("ctwSpringSocialConfigure..................");
         return new CtwSpringSocialConfigurer(securityProperties.getSocial().getFilterProcessesUrl());
     }
 }

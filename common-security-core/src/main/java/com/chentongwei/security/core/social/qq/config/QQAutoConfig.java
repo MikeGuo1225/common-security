@@ -17,7 +17,7 @@ import org.springframework.social.connect.ConnectionFactory;
 /**
  * 只有当配置文件配置了com.chentongwei.security.social.qq.app-id并且有值后，才会加载此类，否则不会加载此类的任何方法
  */
-//@ConditionalOnProperty(prefix = "com.chentongwei.security.social.qq", name = "app-id")
+//@ConditionalOnProperty(prefix = "com.chentongwei.security.social.qq", name = "appId")
 public class QQAutoConfig extends SocialAutoConfigurerAdapter {
 
     @Autowired
@@ -26,7 +26,6 @@ public class QQAutoConfig extends SocialAutoConfigurerAdapter {
     @Override
     protected ConnectionFactory<?> createConnectionFactory() {
         QQProperties qqConfig = securityProperties.getSocial().getQq();
-        System.out.println("qqConfig....." + JSON.toJSONString(qqConfig));
         return new QQConnectionFactory(qqConfig.getProviderId(), qqConfig.getAppId(), qqConfig.getAppSecret());
     }
 }
