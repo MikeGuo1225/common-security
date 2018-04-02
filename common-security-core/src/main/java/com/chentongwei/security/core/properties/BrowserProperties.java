@@ -1,6 +1,7 @@
 package com.chentongwei.security.core.properties;
 
 import com.chentongwei.security.core.constant.SecurityConstant;
+import com.chentongwei.security.core.enums.FrameDisableStatus;
 import com.chentongwei.security.core.enums.LoginType;
 
 /**
@@ -30,6 +31,10 @@ public class BrowserProperties {
      */
     private int rememberMeSeconds = 3600;
 
+    /**
+     * 允许iframe嵌套，1禁止，0允许
+     */
+    private Integer frameDisable = FrameDisableStatus.FORBIDDEN.status();
 
     public LoginType getLoginType() {
         return loginType;
@@ -61,5 +66,13 @@ public class BrowserProperties {
 
     public void setUnAuthorizedPage(String unAuthorizedPage) {
         this.unAuthorizedPage = unAuthorizedPage;
+    }
+
+    public Integer getFrameDisable() {
+        return frameDisable;
+    }
+
+    public void setFrameDisable(Integer frameDisable) {
+        this.frameDisable = frameDisable;
     }
 }

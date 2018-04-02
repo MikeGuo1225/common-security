@@ -3,6 +3,7 @@ package com.chentongwei.security.browser.config;
 import com.chentongwei.security.core.authentication.AbstractChannelSecurityConfig;
 import com.chentongwei.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.chentongwei.security.core.constant.SecurityConstant;
+import com.chentongwei.security.core.enums.FrameDisableStatus;
 import com.chentongwei.security.core.properties.SecurityProperties;
 import com.chentongwei.security.core.validate.code.ValidateCodeSecurityConfig;
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +19,7 @@ import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 浏览器的安全配置
@@ -56,29 +58,33 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
         // 表单登录以及成功/失败处理
         authenticationConfig(http);
         // 验证码（image+sms）
-        http.apply(validateCodeSecurityConfig)
+        HttpSecurity httpSecurity = http.apply(validateCodeSecurityConfig)
                 .and()
-            .apply(smsCodeAuthenticationSecurityConfig)
+                .apply(smsCodeAuthenticationSecurityConfig)
                 .and()
-            // 记住我
-            .rememberMe()
+                // 记住我
+                .rememberMe()
                 .tokenRepository(persistentTokenRepository())
                 .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
                 .userDetailsService(userDetailsService)
                 .and()
-             // 权限设置
-            .authorizeRequests()
-                 // 任何请求都必须经过身份认证，排除如下
+                // 权限设置
+                .authorizeRequests()
+                // 任何请求都必须经过身份认证，排除如下
                 .antMatchers(
                         getPermitUrls()
                 ).permitAll()
-                 // 任何请求
+                // 任何请求
                 .anyRequest()
-                 // 都必须经过身份认证
+                // 都必须经过身份认证
                 .authenticated()
                 .and()
-             // 先加上这句话，否则登录的时候会出现403错误码，Could not verify the provided CSRF token because your session was not found.
-            .csrf().disable();
+              // 先加上这句话，否则登录的时候会出现403错误码，Could not verify the provided CSRF token because your session was not found.
+             .csrf().disable();
+        // 若是0，则放开frame权限
+        if (Objects.equals(FrameDisableStatus.ALLOW.status(), securityProperties.getBrowser().getFrameDisable())) {
+            httpSecurity.headers().frameOptions().disable();
+        }
     }
 
     /**
