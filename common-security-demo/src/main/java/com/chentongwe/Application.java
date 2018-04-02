@@ -19,7 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ComponentScan(basePackages = {"com.chentongwe", "com.chentongwei"})
 @SpringBootApplication
 @RestController
-public class Application  extends WebMvcConfigurerAdapter{
+public class Application extends WebMvcConfigurerAdapter{
     /**
      * @param args
      */

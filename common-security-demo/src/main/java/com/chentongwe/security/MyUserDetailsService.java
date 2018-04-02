@@ -4,18 +4,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.social.security.SocialUser;
+import org.springframework.social.security.SocialUserDetails;
+import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Service;
 
 /**
  * @author chentongwei@bshf360.com 2018-03-26 13:15
  */
 @Service
-public class MyUserDetailsService implements UserDetailsService {
+public class MyUserDetailsService implements UserDetailsService, SocialUserDetailsService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -28,7 +30,13 @@ public class MyUserDetailsService implements UserDetailsService {
         return buildUser(username);
     }
 
-    private UserDetails buildUser(String username) {
+    @Override
+    public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException {
+        logger.info("social登录用户id：" + userId);
+        return buildUser(userId);
+    }
+
+    private SocialUserDetails buildUser(String username) {
         /**
          * passwordEncoder.encode这步骤应该放到注册接口去做，而这里只需要传一个从db查出来的pwd即可。
          *
@@ -39,7 +47,6 @@ public class MyUserDetailsService implements UserDetailsService {
         String password = passwordEncoder.encode("123456");
         logger.info("数据库密码是：" + password);
         // 这个User不一定必须用SpringSecurity的，可以写一个自定义实现UserDetails接口的类，然后把是否锁定等判断逻辑写进去。
-        return new User(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
-
+        return new SocialUser(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
     }
 }

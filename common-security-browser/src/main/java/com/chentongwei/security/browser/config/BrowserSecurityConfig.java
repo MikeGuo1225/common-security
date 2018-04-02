@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -53,34 +54,40 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private SpringSocialConfigurer ctwSocialSecurityConfig;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // 表单登录以及成功/失败处理
         authenticationConfig(http);
         // 验证码（image+sms）
-        HttpSecurity httpSecurity = http.apply(validateCodeSecurityConfig)
-                .and()
+        HttpSecurity httpSecurity =
+                http.apply(validateCodeSecurityConfig)
+                    .and()
                 .apply(smsCodeAuthenticationSecurityConfig)
-                .and()
+                    .and()
+                .apply(ctwSocialSecurityConfig)
+                    .and()
                 // 记住我
                 .rememberMe()
-                .tokenRepository(persistentTokenRepository())
-                .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
-                .userDetailsService(userDetailsService)
-                .and()
+                    .tokenRepository(persistentTokenRepository())
+                    .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
+                    .userDetailsService(userDetailsService)
+                    .and()
                 // 权限设置
                 .authorizeRequests()
-                // 任何请求都必须经过身份认证，排除如下
-                .antMatchers(
-                        getPermitUrls()
-                ).permitAll()
-                // 任何请求
-                .anyRequest()
-                // 都必须经过身份认证
-                .authenticated()
-                .and()
-              // 先加上这句话，否则登录的时候会出现403错误码，Could not verify the provided CSRF token because your session was not found.
-             .csrf().disable();
+                    // 任何请求都必须经过身份认证，排除如下
+                    .antMatchers(
+                            getPermitUrls()
+                    ).permitAll()
+                    // 任何请求
+                    .anyRequest()
+                    // 都必须经过身份认证
+                    .authenticated()
+                    .and()
+                  // 先加上这句话，否则登录的时候会出现403错误码，Could not verify the provided CSRF token because your session was not found.
+                 .csrf().disable();
         // 若是0，则放开frame权限
         if (Objects.equals(FrameDisableStatus.ALLOW.status(), securityProperties.getBrowser().getFrameDisable())) {
             httpSecurity.headers().frameOptions().disable();
