@@ -5,7 +5,12 @@ package com.chentongwei.security.core.properties.social;
  */
 public class SocialProperties {
 
+    /**
+     * QQ登录URL
+     */
     private String filterProcessesUrl = "/auth";
+
+    private String tablePrefix;
 
     private QQProperties qq = new QQProperties();
 
@@ -23,5 +28,13 @@ public class SocialProperties {
 
     public void setFilterProcessesUrl(String filterProcessesUrl) {
         this.filterProcessesUrl = filterProcessesUrl;
+    }
+
+    public String getTablePrefix() {
+        return tablePrefix;
+    }
+
+    public void setTablePrefix(String tablePrefix) {
+        this.tablePrefix = tablePrefix;
     }
 }

@@ -4,16 +4,9 @@ import com.chentongwei.security.core.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.social.config.annotation.EnableSocial;
 import org.springframework.social.config.annotation.SocialConfigurerAdapter;
-import org.springframework.social.connect.ConnectionFactoryLocator;
-import org.springframework.social.connect.UsersConnectionRepository;
-import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
-import org.springframework.social.connect.web.ProviderSignInUtils;
 import org.springframework.social.security.SpringSocialConfigurer;
-
-import javax.sql.DataSource;
 
 /**
  * Social配置类
@@ -25,21 +18,7 @@ import javax.sql.DataSource;
 public class SocialConfig extends SocialConfigurerAdapter {
 
     @Autowired
-    private DataSource dataSource;
-
-    @Autowired
     private SecurityProperties securityProperties;
-
-    @Override
-    public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
-        JdbcUsersConnectionRepository repository = new JdbcUsersConnectionRepository(dataSource, connectionFactoryLocator, Encryptors.noOpText());
-        // TODO 可配置
-        repository.setTablePrefix("ctw_");
-        /**
-         * Encryptors 加解密工具，我们这里不加密
-         */
-        return repository;
-    }
 
     /**
      * SpringSocial过滤器，加到BrowserSecurityConfig里，使之生效。
@@ -72,18 +51,4 @@ public class SocialConfig extends SocialConfigurerAdapter {
         return configurer;
     }
 
-    /**
-     * 下面这个工具类主要解决两个问题：
-     * 1、注册过程中如何拿到SpringSocial信息
-     * 2、（注册接口能拿到userId（userconnection表的主键userId））注册完成后那怎么将这个userId传递给SpringSocial，
-     * 让SpringSocial根据userId拿到用户信息，和注册时填写的基本信息一起保存到db中
-     *
-     * @return
-     */
-    @Bean
-    public ProviderSignInUtils providerSignInUtils(ConnectionFactoryLocator connectionFactoryLocator) {
-        return new ProviderSignInUtils(connectionFactoryLocator, getUsersConnectionRepository(connectionFactoryLocator)) {
-
-        };
-    }
 }

@@ -110,6 +110,7 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
         urls.add(SecurityConstant.DEFAULT_UNAUTHENTICATION_URL);
         urls.add(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_MOBILE);
         urls.add(SecurityConstant.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*");
+        urls.add(SecurityConstant.DEFAULT_GET_SOCIAL_USER_INFO);
         urls.add(securityProperties.getBrowser().getLoginPage());
         urls.add(securityProperties.getBrowser().getRegisterPage());
         return urls.toArray(new String[urls.size()]);

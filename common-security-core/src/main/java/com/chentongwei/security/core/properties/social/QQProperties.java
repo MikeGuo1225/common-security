@@ -7,7 +7,15 @@ import org.springframework.boot.autoconfigure.social.SocialProperties;
  */
 public class QQProperties extends SocialProperties {
 
+    /**
+     * 标识
+     */
     private String providerId = "qq";
+
+    /**
+     * 自动注册；false缺省值，默认不自动。true：自动
+     */
+    private String autoSignUp = "false";
 
     public String getProviderId() {
         return providerId;
@@ -15,5 +23,13 @@ public class QQProperties extends SocialProperties {
 
     public void setProviderId(String providerId) {
         this.providerId = providerId;
+    }
+
+    public String getAutoSignUp() {
+        return autoSignUp;
+    }
+
+    public void setAutoSignUp(String autoSignUp) {
+        this.autoSignUp = autoSignUp;
     }
 }

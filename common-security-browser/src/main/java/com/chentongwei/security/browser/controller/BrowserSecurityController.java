@@ -61,11 +61,21 @@ public class BrowserSecurityController {
         return null;
     }
 
-    @GetMapping("/social/user")
+    /**
+     * 返回SocialUserInfo，主要目的是在注册页面可以发ajax拿到userInfo的一些属性，
+     * 比如昵称头像等，用于展示到注册页面
+     *
+     * @param request：请求
+     * @return
+     */
+    @GetMapping(SecurityConstant.DEFAULT_GET_SOCIAL_USER_INFO)
     public SocialUserInfo getSocialUserInfo(HttpServletRequest request) {
         SocialUserInfo userInfo = new SocialUserInfo();
         // 跳转到注册页之前就已经放到了session里了，这是SpringSocial做的，可以debug看源码
         Connection<?> connection = providerSignInUtils.getConnectionFromSession((new ServletWebRequest(request)));
+        if (null == connection) {
+            return new SocialUserInfo();
+        }
         userInfo.setProviderId(connection.getKey().getProviderId());
         userInfo.setProviderUserId(connection.getKey().getProviderUserId());
         userInfo.setNickname(connection.getDisplayName());

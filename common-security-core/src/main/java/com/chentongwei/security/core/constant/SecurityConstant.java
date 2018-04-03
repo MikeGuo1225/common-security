@@ -61,4 +61,9 @@ public interface SecurityConstant {
      * 默认的处理验证码的url前缀
      */
     String DEFAULT_VALIDATE_CODE_URL_PREFIX = "/code";
+
+    /**
+     * 获取QQ登录后用户信息接口，此接口主要用于展示到注册页面一些基本信息，比如头像和昵称等
+     */
+    String DEFAULT_GET_SOCIAL_USER_INFO = "/social/user";
 }
