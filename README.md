@@ -16,5 +16,5 @@
 
 **详细说明文档**
 
-https://www.kancloud.cn/geekerdream/v1/571294
+## [wiki地址](https://gitee.com/geekerdream/common-security/wikis/Introduce)
 
