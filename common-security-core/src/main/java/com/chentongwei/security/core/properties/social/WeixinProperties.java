@@ -3,14 +3,16 @@ package com.chentongwei.security.core.properties.social;
 import org.springframework.boot.autoconfigure.social.SocialProperties;
 
 /**
- * @author chentongwei@bshf360.com 2018-04-02 11:54
+ * 微信登录配置信息
+ *
+ * @author chentongwei@bshf360.com 2018-04-04 13:28
  */
-public class QQProperties extends SocialProperties {
+public class WeixinProperties extends SocialProperties {
 
     /**
-     * 标识
+     * 第三方id，用来决定发起第三方登录的url，默认是weixin
      */
-    private String providerId = "qq";
+    private String providerId = "weixin";
 
     public String getProviderId() {
         return providerId;

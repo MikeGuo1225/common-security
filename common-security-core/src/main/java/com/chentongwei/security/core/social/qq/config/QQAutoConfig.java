@@ -66,7 +66,7 @@ public class QQAutoConfig extends SocialAutoConfigurerAdapter {
         /**
          * 作用在上面说了，QQ登录自动注册用户
          */
-        if (StringUtils.equals(securityProperties.getSocial().getQq().getAutoSignUp(), "true")) {
+        if (StringUtils.equals(securityProperties.getSocial().getAutoSignUp(), "true")) {
             repository.setConnectionSignUp(ctwConnectionSignUp);
         }
 

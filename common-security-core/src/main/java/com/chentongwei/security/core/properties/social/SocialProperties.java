@@ -10,9 +10,25 @@ public class SocialProperties {
      */
     private String filterProcessesUrl = "/auth";
 
+    /**
+     * 自动注册；false缺省值，默认不自动。true：自动
+     */
+    private String autoSignUp = "false";
+
+    /**
+     * 表前缀
+     */
     private String tablePrefix;
 
+    /**
+     * QQ互联配置
+     */
     private QQProperties qq = new QQProperties();
+
+    /**
+     * 微信配置
+     */
+    private WeixinProperties weixin = new WeixinProperties();
 
     public QQProperties getQq() {
         return qq;
@@ -30,11 +46,27 @@ public class SocialProperties {
         this.filterProcessesUrl = filterProcessesUrl;
     }
 
+    public String getAutoSignUp() {
+        return autoSignUp;
+    }
+
+    public void setAutoSignUp(String autoSignUp) {
+        this.autoSignUp = autoSignUp;
+    }
+
     public String getTablePrefix() {
         return tablePrefix;
     }
 
     public void setTablePrefix(String tablePrefix) {
         this.tablePrefix = tablePrefix;
+    }
+
+    public WeixinProperties getWeixin() {
+        return weixin;
+    }
+
+    public void setWeixin(WeixinProperties weixin) {
+        this.weixin = weixin;
     }
 }

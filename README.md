@@ -12,7 +12,7 @@
 | V1.1.0 | 1、完成了极验证的接口与校验；2、优化了验证的代码             |
 | V1.1.1 | 完成了可配置是否允许frame的引入。                            |
 | V1.2.0 | 完成Oauth2的初步规划，QQ互联（QQ登录+注册【可配置成自动注册】） |
-| V1.3.0 | 敬请关注.....预计开发Oauth2功能（微信登录）。                |
+| V1.3.0 | 完成基础OAuth2的微信互联（微信登录+注册【可配置成自动注册】），修改`com.chentongwei.security.social.qq.autoSignUp=true为com.chentongwei.security.social.autoSignUp=true` |
 
 **详细说明文档**
 
