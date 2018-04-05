@@ -1,4 +1,4 @@
-package com.chentongwei.security.core.social.qq.config;
+package com.chentongwei.security.core.social;
 
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionSignUp;

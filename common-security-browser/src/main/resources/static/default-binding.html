@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绑定</title>
+</head>
+<body>
+ <h2>默认的WX绑定页面</h2>
+ <form action="/connect/weixintest" method="post">
+     <button type="submit">绑定微信</button>
+ </form>
+ <br />
+ <button onclick="cancle()">解绑</button>
+ <h2>默认的QQ绑定页面</h2>
+ <form action="/connect/qq" method="post">
+     <button type="submit">绑定QQ</button>
+ </form>
+ <br>
+ <form id="qq" onclick="cancleQQ()" action="/connect/qq" method="post">
+     <input id="method" type="hidden" name="_method" value="delete"/>
+     <button onclick="cancleQQ()">解绑QQ</button>
+ </form>
+ <br />
+ <button onclick="cancleQQ2()">解绑</button>
+</body>
+<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+<script>
+    function cancle() {
+        $.ajax({
+            url: "/connect/weixintest",
+            type: "delete",
+            success: function (data) {
+                console.log(data)
+            }
+        });
+    }
+
+    function cancleQQ() {
+        $("#method").val("delete");
+        $("#qq").submit();
+    }
+
+    function cancleQQ2() {
+        $.ajax({
+            url: "/connect/callback",
+            data: {
+                "_method": "delete"
+            },
+            type: "post",
+            success: function (data) {
+                console.log(data)
+            }
+       });
+    }
+</script>
+</html>

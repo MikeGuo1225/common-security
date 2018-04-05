@@ -2,9 +2,11 @@ package com.chentongwei.security.core.social.qq.config;
 
 import com.chentongwei.security.core.properties.SecurityProperties;
 import com.chentongwei.security.core.properties.social.QQProperties;
+import com.chentongwei.security.core.social.CtwConnectView;
 import com.chentongwei.security.core.social.qq.connect.QQConnectionFactory;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.social.SocialAutoConfigurerAdapter;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +18,7 @@ import org.springframework.social.connect.ConnectionSignUp;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
 import org.springframework.social.connect.web.ProviderSignInUtils;
+import org.springframework.web.servlet.View;
 
 import javax.sql.DataSource;
 
@@ -88,6 +91,17 @@ public class QQAutoConfig extends SocialAutoConfigurerAdapter {
     public ProviderSignInUtils providerSignInUtils(ConnectionFactoryLocator connectionFactoryLocator) {
         return new ProviderSignInUtils(connectionFactoryLocator, this.getUsersConnectionRepository(connectionFactoryLocator)) {
         };
+    }
+
+    /**
+     * connect/qqConnect：解绑  connect/qqConnected：绑定
+     *
+     * @return
+     */
+    @Bean({"connect/qqConnect", "connect/qqConnected"})
+    @ConditionalOnMissingBean(name = "qqConnectView")
+    public View qqConnectedView() {
+        return new CtwConnectView();
     }
 }
 

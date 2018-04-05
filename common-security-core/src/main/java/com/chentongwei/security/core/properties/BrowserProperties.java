@@ -17,6 +17,11 @@ public class BrowserProperties {
     private LoginType loginType = LoginType.JSON;
 
     /**
+     * 若为跳转页面的形式，则登录成功后跳转到的页面，默认为上一次请求的url
+     */
+    private String loginSuccessPage;
+
+    /**
      * 默认登录页面
      */
     private String loginPage = SecurityConstant.DEFAULT_LOGIN_PAGE_URL;
@@ -41,12 +46,25 @@ public class BrowserProperties {
      */
     private Integer frameDisable = FrameDisableStatus.FORBIDDEN.status();
 
+    /**
+     * 绑定成功页面
+     */
+    private String bindSuccessPage;
+
     public LoginType getLoginType() {
         return loginType;
     }
 
     public void setLoginType(LoginType loginType) {
         this.loginType = loginType;
+    }
+
+    public String getLoginSuccessPage() {
+        return loginSuccessPage;
+    }
+
+    public void setLoginSuccessPage(String loginSuccessPage) {
+        this.loginSuccessPage = loginSuccessPage;
     }
 
     public String getLoginPage() {
@@ -88,4 +106,13 @@ public class BrowserProperties {
     public void setFrameDisable(Integer frameDisable) {
         this.frameDisable = frameDisable;
     }
+
+    public String getBindSuccessPage() {
+        return bindSuccessPage;
+    }
+
+    public void setBindSuccessPage(String bindSuccessPage) {
+        this.bindSuccessPage = bindSuccessPage;
+    }
+
 }

@@ -6,7 +6,7 @@ package com.chentongwei.security.core.properties.social;
 public class SocialProperties {
 
     /**
-     * QQ登录URL
+     * QQ/微信等登录URL
      */
     private String filterProcessesUrl = "/auth";
 

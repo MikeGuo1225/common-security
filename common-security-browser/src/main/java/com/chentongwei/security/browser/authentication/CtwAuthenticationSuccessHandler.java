@@ -5,6 +5,7 @@ import com.chentongwei.security.core.entity.SimpleResponse;
 import com.chentongwei.security.core.enums.LoginType;
 import com.chentongwei.security.core.properties.SecurityProperties;
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,14 @@ public class CtwAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(JSON.toJSONString(new SimpleResponse(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase(), authentication)));
         } else {
-            // 会帮我们跳转到上一次请求的页面上
-            super.onAuthenticationSuccess(request, response, authentication);
+            request.getSession().setAttribute("authentication", authentication);
+            logger.info(JSON.toJSONString(request.getSession().getAttribute("authentication")));
+            if (StringUtils.isNotBlank(securityProperties.getBrowser().getLoginSuccessPage())) {
+                response.sendRedirect(securityProperties.getBrowser().getLoginSuccessPage());
+            } else {
+                // 会帮我们跳转到上一次请求的页面上
+                super.onAuthenticationSuccess(request, response, authentication);
+            }
         }
     }
 }
