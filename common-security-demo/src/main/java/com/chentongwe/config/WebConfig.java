@@ -1,9 +1,11 @@
 package com.chentongwe.config;
 
+import com.chentongwe.security.QQConnectView;
 import org.apache.catalina.filters.CorsFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,12 @@ import java.util.List;
  */
 @Configuration
 public class WebConfig {
+
+    @Bean({"connect/qqConnect", "connect/qqConnected"})
+    public View qqConnectedView() {
+        return new QQConnectView();
+    }
+
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();

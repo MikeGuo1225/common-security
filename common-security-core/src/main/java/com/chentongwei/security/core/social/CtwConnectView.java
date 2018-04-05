@@ -34,10 +34,13 @@ public class CtwConnectView extends AbstractView {
     @Override
     protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+        /*
+         * 解绑
+         */
         if (null == model.get("connections")) {
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().print(JSON.toJSONString(new SimpleResponse(200, "解绑成功", null)));
-        } else {
+        } else { // 绑定
             response.setContentType("text/html;charset=UTF-8");
             if (StringUtils.isBlank(securityProperties.getBrowser().getBindSuccessPage())) {
                 response.getWriter().write("<h3>绑定成功</h3>");
