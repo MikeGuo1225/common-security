@@ -13,6 +13,7 @@
 | V1.1.1 | 完成了可配置是否允许frame的引入。                            |
 | V1.2.0 | 完成Oauth2的初步规划，QQ互联（QQ登录+注册【可配置成自动注册】） |
 | V1.3.0 | 完成基础OAuth2的微信互联（微信登录+注册【可配置成自动注册】），修改`com.chentongwei.security.social.qq.autoSignUp=true为com.chentongwei.security.social.autoSignUp=true` |
+| V1.4.0 | 完成QQ/微信的绑定与解绑功能；新增登录成功后可跳转到自定义页面。 |
 
 **详细说明文档**
 
