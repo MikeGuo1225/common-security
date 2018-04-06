@@ -14,6 +14,7 @@
 | V1.2.0 | 完成Oauth2的初步规划，QQ互联（QQ登录+注册【可配置成自动注册】） |
 | V1.3.0 | 完成基础OAuth2的微信互联（微信登录+注册【可配置成自动注册】），修改`com.chentongwei.security.social.qq.autoSignUp=true为com.chentongwei.security.social.autoSignUp=true` |
 | V1.4.0 | 完成QQ/微信的绑定与解绑功能；新增登录成功后可跳转到自定义页面。 |
+| V1.5.0 | 1、session超时时间设置;2、session超时处理;3、session最大并发数可配置以及是否允许同时在线;4、设置返回形式：JSON、REDIRECT;5、修改验证码支持集群部署。session统一管理（redis） |
 
 **详细说明文档**
 

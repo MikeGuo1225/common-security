@@ -20,6 +20,8 @@ public class SecurityProperties {
 
     private SocialProperties social = new SocialProperties();
 
+    private SessionProperties session = new SessionProperties();
+
     public BrowserProperties getBrowser() {
         return browser;
     }
@@ -50,5 +52,13 @@ public class SecurityProperties {
 
     public void setSocial(SocialProperties social) {
         this.social = social;
+    }
+
+    public SessionProperties getSession() {
+        return session;
+    }
+
+    public void setSession(SessionProperties session) {
+        this.session = session;
     }
 }

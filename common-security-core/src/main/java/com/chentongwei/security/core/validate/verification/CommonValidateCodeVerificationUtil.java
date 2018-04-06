@@ -1,6 +1,5 @@
 package com.chentongwei.security.core.validate.verification;
 
-import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.exception.ValidateCodeException;
 import com.chentongwei.security.core.validate.code.ValidateCode;
 import org.apache.commons.lang.StringUtils;

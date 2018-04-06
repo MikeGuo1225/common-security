@@ -1,4 +1,4 @@
-package com.chentongwei.security.core.config;
+package com.chentongwei.security.core.validate.config;
 
 import com.chentongwei.security.core.properties.SecurityProperties;
 import com.chentongwei.security.core.validate.code.ValidateCodeGenerator;

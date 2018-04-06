@@ -21,7 +21,7 @@
             <td>图形验证码:</td>
             <td>
                 <input type="text" name="imageCode">
-                <img src="code/image?width=200">
+                <img id="imageCode" src="" onclick="getImageCode()" />
             </td>
         </tr>
         <tr>
@@ -89,6 +89,20 @@
 <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
 <script src="https://static.geetest.com/static/tools/gt.js"></script>
 <script>
+
+    window.onload = function () {
+        getImageCode();
+    }
+
+    function getImageCode() {
+        $.ajax({
+            url: "code/image",
+            type: "get",
+            success: function (data) {
+                $("#imageCode").attr("src", "data:image/jpeg;base64," + data);
+            }
+        });
+    }
 
     $.ajax({
         // 获取id，challenge，success（是否启用failback）

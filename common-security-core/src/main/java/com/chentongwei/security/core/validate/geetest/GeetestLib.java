@@ -3,6 +3,7 @@ package com.chentongwei.security.core.validate.geetest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
@@ -16,8 +17,9 @@ import com.alibaba.fastjson.JSONObject;
  *
  * @author TongWei.Chen 2017-6-4 11:37:56
  */
-public class GeetestLib {
+public class GeetestLib implements Serializable {
 
+	private static final long serialVersionUID = 488606703358558183L;
 	protected final String verName = "4.0";
 	protected final String sdkLang = "java";
 

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
  */
 public class GeetestCode extends ValidateCode {
 
+    private static final long serialVersionUID = 746373274054964636L;
     /**
      * 验证码信息
      */

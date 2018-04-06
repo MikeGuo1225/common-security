@@ -1,11 +1,11 @@
 package com.chentongwei.security.core.validate.image;
 
 import com.chentongwei.security.core.validate.code.AbstractValidateCodeProcessor;
-import com.chentongwei.security.core.validate.image.ImageCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import javax.imageio.ImageIO;
 import java.io.IOException;
 
 /**
@@ -16,6 +16,8 @@ import java.io.IOException;
 @Component("imageValidateCodeProcessor")
 public class ImageCodeProcessor extends AbstractValidateCodeProcessor<ImageCode> {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     /**
      * 发送验证码，并将其写到响应中
      *
@@ -24,6 +26,6 @@ public class ImageCodeProcessor extends AbstractValidateCodeProcessor<ImageCode>
      */
     @Override
     protected void send(ServletWebRequest request, ImageCode validateCode) throws IOException {
-        ImageIO.write(validateCode.getImage(), "JPEG", request.getResponse().getOutputStream());
+        request.getResponse().getWriter().print(validateCode.getImage());
     }
 }

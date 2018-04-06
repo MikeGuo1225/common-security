@@ -10,7 +10,7 @@ import org.springframework.web.context.request.ServletWebRequest;
  * @Project common-security
  * @Description:
  */
-@Component("geetestValidateCodeGenerator")
+//@Component("geetestValidateCodeGenerator")
 public class DemoGeetestCodeGenerator implements ValidateCodeGenerator {
     @Override
     public ValidateCode generate(ServletWebRequest request) {

@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
@@ -54,8 +56,19 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    /**
+     * Spring Social相关
+     */
     @Autowired
     private SpringSocialConfigurer ctwSocialSecurityConfig;
+
+    /**
+     * Session相关
+     */
+    @Autowired
+    private InvalidSessionStrategy invalidSessionStrategy;
+    @Autowired
+    private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -74,6 +87,18 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                     .tokenRepository(persistentTokenRepository())
                     .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
                     .userDetailsService(userDetailsService)
+                    .and()
+                // session设置
+                .sessionManagement()
+                    // session失效URL
+                    .invalidSessionStrategy(invalidSessionStrategy)
+                    // session最大并发数
+                    .maximumSessions(securityProperties.getSession().getMaximumSessions())
+                    // 多用户同时登陆时是否会踢掉上一个用户，true：不允许同时登陆，false：踢掉上一个
+                    .maxSessionsPreventsLogin(securityProperties.getSession().isMaxSessionsPreventsLogin())
+                    // 被踢后的处理
+                    .expiredSessionStrategy(sessionInformationExpiredStrategy)
+                    .and()
                     .and()
                 // 权限设置
                 .authorizeRequests()
