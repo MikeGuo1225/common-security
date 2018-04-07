@@ -22,6 +22,8 @@ public class SecurityProperties {
 
     private SessionProperties session = new SessionProperties();
 
+    public LogoutProperties logout = new LogoutProperties();
+
     public BrowserProperties getBrowser() {
         return browser;
     }
@@ -60,5 +62,13 @@ public class SecurityProperties {
 
     public void setSession(SessionProperties session) {
         this.session = session;
+    }
+
+    public LogoutProperties getLogout() {
+        return logout;
+    }
+
+    public void setLogout(LogoutProperties logout) {
+        this.logout = logout;
     }
 }

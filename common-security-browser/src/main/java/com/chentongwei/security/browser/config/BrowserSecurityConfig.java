@@ -4,6 +4,7 @@ import com.chentongwei.security.core.authentication.AbstractChannelSecurityConfi
 import com.chentongwei.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.enums.FrameDisableStatus;
+import com.chentongwei.security.core.logout.CtwLogoutSuccessHandler;
 import com.chentongwei.security.core.properties.SecurityProperties;
 import com.chentongwei.security.core.validate.code.ValidateCodeSecurityConfig;
 import org.apache.commons.lang.StringUtils;
@@ -100,6 +101,11 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                     .expiredSessionStrategy(sessionInformationExpiredStrategy)
                     .and()
                     .and()
+                .logout()
+                    .logoutUrl(securityProperties.getLogout().getLogoutUrl())
+                    .logoutSuccessHandler(new CtwLogoutSuccessHandler(securityProperties.getLogout().getLogoutSuccessUrl()))
+                    .deleteCookies("JSESSIONID")
+                    .and()
                 // 权限设置
                 .authorizeRequests()
                     // 任何请求都必须经过身份认证，排除如下
@@ -138,6 +144,10 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
         urls.add(SecurityConstant.DEFAULT_GET_SOCIAL_USER_INFO);
         urls.add(securityProperties.getBrowser().getLoginPage());
         urls.add(securityProperties.getBrowser().getRegisterPage());
+        urls.add(securityProperties.getSession().getSessionInvalidUrl());
+        if (! StringUtils.equals(SecurityConstant.DEFAULT_LOGIN_PAGE_URL, securityProperties.getLogout().getLogoutSuccessUrl())) {
+            urls.add(securityProperties.getLogout().getLogoutSuccessUrl());
+        }
         return urls.toArray(new String[urls.size()]);
     }
 
