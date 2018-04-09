@@ -1,4 +1,4 @@
-package com.chentongwei.security.app;
+package com.chentongwei.security.app.config;
 
 import com.chentongwei.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.chentongwei.security.core.constant.SecurityConstant;

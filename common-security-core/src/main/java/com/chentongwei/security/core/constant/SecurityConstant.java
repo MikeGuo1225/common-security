@@ -58,6 +58,11 @@ public interface SecurityConstant {
     String SESSION_KEY_PREFIX = "SESSION_KEY_FOR_CODE_";
 
     /**
+     * 验证码放入redis时的前缀
+     */
+    String REDIS_KEY_PREFIX = "REDIS_KEY_FOR_CODE_";
+
+    /**
      * 默认的处理验证码的url前缀
      */
     String DEFAULT_VALIDATE_CODE_URL_PREFIX = "/code";
