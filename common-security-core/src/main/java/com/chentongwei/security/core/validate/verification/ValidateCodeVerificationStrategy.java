@@ -1,6 +1,6 @@
 package com.chentongwei.security.core.validate.verification;
 
-import org.springframework.social.connect.web.SessionStrategy;
+import com.chentongwei.security.core.enums.ValidateCodeType;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**
@@ -10,6 +10,6 @@ import org.springframework.web.context.request.ServletWebRequest;
  */
 public interface ValidateCodeVerificationStrategy {
 
-    void verification(SessionStrategy sessionStrategy, ServletWebRequest request, String sessionKey);
+    void verification(ValidateCodeRepository validateCodeRepository, ServletWebRequest request, ValidateCodeType validateCodeType);
 
 }

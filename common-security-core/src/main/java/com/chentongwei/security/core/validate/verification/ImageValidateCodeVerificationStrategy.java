@@ -1,13 +1,7 @@
 package com.chentongwei.security.core.validate.verification;
 
 import com.chentongwei.security.core.constant.SecurityConstant;
-import com.chentongwei.security.core.exception.ValidateCodeException;
-import com.chentongwei.security.core.validate.code.ValidateCode;
-import com.chentongwei.security.core.validate.geetest.GeetestCode;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.social.connect.web.SessionStrategy;
-import org.springframework.web.bind.ServletRequestBindingException;
-import org.springframework.web.bind.ServletRequestUtils;
+import com.chentongwei.security.core.enums.ValidateCodeType;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**
@@ -18,7 +12,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 public class ImageValidateCodeVerificationStrategy implements ValidateCodeVerificationStrategy {
 
     @Override
-    public void verification(SessionStrategy sessionStrategy, ServletWebRequest request, String sessionKey) {
-        new CommonValidateCodeVerificationUtil().verifity(sessionStrategy, request, sessionKey, SecurityConstant.DEFAULT_PARAMETER_NAME_CODE_IMAGE);
+    public void verification(ValidateCodeRepository validateCodeRepository, ServletWebRequest request, ValidateCodeType validateCodeType) {
+        new CommonValidateCodeVerificationUtil().verifity(validateCodeRepository, request, validateCodeType, SecurityConstant.DEFAULT_PARAMETER_NAME_CODE_IMAGE);
     }
 }

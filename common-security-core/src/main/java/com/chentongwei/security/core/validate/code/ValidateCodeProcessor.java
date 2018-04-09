@@ -1,5 +1,6 @@
 package com.chentongwei.security.core.validate.code;
 
+import com.chentongwei.security.core.enums.ValidateCodeType;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**
@@ -23,5 +24,4 @@ public interface ValidateCodeProcessor {
      * param request：请求
      */
     void validate(ServletWebRequest request);
-
 }

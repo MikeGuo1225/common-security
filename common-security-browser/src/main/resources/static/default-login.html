@@ -110,6 +110,7 @@
         type: "get",
         dataType: "json",
         success: function (data) {
+            console.log("data:" , data);
             // 使用initGeetest接口
             // 参数1：配置参数
             // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
@@ -123,6 +124,7 @@
     });
     // 代码详细说明
     var handlerPopup = function (captchaObj) {
+        console.info(captchaObj)
         // 注册提交按钮事件，比如在登陆页面的登陆按钮
         $("#popup-submit").click(function () {
             // 此处省略在登陆界面中，获取登陆数据的一些步骤
@@ -165,7 +167,9 @@
         // 将验证码加到id为captcha的元素里
         // 验证码将会在下面指定的元素中显示出来
         captchaObj.appendTo("#captcha");
+        alert()
         captchaObj.onReady(function () {
+            alert(1)
             $("#wait").hide();
         });
     };

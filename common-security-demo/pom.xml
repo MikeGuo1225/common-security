@@ -24,7 +24,7 @@
         </dependency>-->
         <dependency>
             <groupId>com.chentongwei</groupId>
-            <artifactId>common-security-app</artifactId>
+            <artifactId>common-security-browser</artifactId>
             <version>${common.security.version}</version>
         </dependency>
         <dependency>

@@ -1,8 +1,8 @@
 package com.chentongwei.security.core.validate.verification;
 
+import com.chentongwei.security.core.enums.ValidateCodeType;
 import com.chentongwei.security.core.exception.ValidateCodeException;
 import com.chentongwei.security.core.validate.geetest.GeetestCode;
-import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**
@@ -13,13 +13,13 @@ import org.springframework.web.context.request.ServletWebRequest;
 public class GeetestValidateCodeVerificationStrategy implements ValidateCodeVerificationStrategy {
 
     @Override
-    public void verification(SessionStrategy sessionStrategy, ServletWebRequest request, String sessionKey) {
-        GeetestCode geetestCodeInSession = (GeetestCode) sessionStrategy.getAttribute(request, sessionKey);
-        if (geetestCodeInSession == null) {
+    public void verification(ValidateCodeRepository validateCodeRepository, ServletWebRequest request, ValidateCodeType validateCodeType) {
+        GeetestCode geetestCodeInRepository = (GeetestCode) validateCodeRepository.get(request, validateCodeType);
+        if (geetestCodeInRepository == null) {
             throw new ValidateCodeException("极验证验证码不存在，请刷新页面重试");
         }
-        if (geetestCodeInSession.isExpired()) {
-            sessionStrategy.removeAttribute(request, sessionKey);
+        if (geetestCodeInRepository.isExpired()) {
+            validateCodeRepository.remove(request, validateCodeType);
             throw new ValidateCodeException("极验证验证码已过期");
         }
 
@@ -29,16 +29,16 @@ public class GeetestValidateCodeVerificationStrategy implements ValidateCodeVeri
 
         //0 失败
         int gtStatus;
-        if (1 == geetestCodeInSession.getGtServerStatus()) {
+        if (1 == geetestCodeInRepository.getGtServerStatus()) {
             //gt-server正常，向gt-server进行二次验证
-            gtStatus = geetestCodeInSession.getGeetestLib().enhencedValidateRequest(
-                    geetestChallenge, geetestValidate, geetestSeccode, geetestCodeInSession.getUserid());
+            gtStatus = geetestCodeInRepository.getGeetestLib().enhencedValidateRequest(
+                    geetestChallenge, geetestValidate, geetestSeccode, geetestCodeInRepository.getUserid());
         } else {
             // gt-server非正常情况下，进行failback模式验证
-            gtStatus = geetestCodeInSession.getGeetestLib().failbackValidateRequest(geetestChallenge, geetestValidate, geetestSeccode);
+            gtStatus = geetestCodeInRepository.getGeetestLib().failbackValidateRequest(geetestChallenge, geetestValidate, geetestSeccode);
         }
         if (1 != gtStatus) {
-            sessionStrategy.removeAttribute(request, sessionKey);
+            validateCodeRepository.remove(request, validateCodeType);
             throw new ValidateCodeException("极验证验证错误");
         }
     }

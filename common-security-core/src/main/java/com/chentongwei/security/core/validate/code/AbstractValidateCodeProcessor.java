@@ -1,16 +1,11 @@
 package com.chentongwei.security.core.validate.code;
 
-import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.enums.ValidateCodeType;
 import com.chentongwei.security.core.exception.ValidateCodeException;
-import com.chentongwei.security.core.validate.geetest.GeetestCode;
+import com.chentongwei.security.core.validate.verification.ValidateCodeRepository;
 import com.chentongwei.security.core.validate.verification.ValidateCodeVerificationFactory;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.connect.web.HttpSessionSessionStrategy;
-import org.springframework.social.connect.web.SessionStrategy;
-import org.springframework.web.bind.ServletRequestBindingException;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
 import java.util.Map;
@@ -20,10 +15,8 @@ import java.util.Map;
  */
 public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> implements ValidateCodeProcessor {
 
-    /**
-     * session，存验证码
-     */
-    private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
+    @Autowired
+    private ValidateCodeRepository validateCodeRepository;
 
     /**
      * 收集系统中所有的 {@link ValidateCodeGenerator} 接口的实现。
@@ -51,11 +44,9 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
     @Override
     public void validate(ServletWebRequest request) {
         ValidateCodeType validateCodeType = getValidateCodeType();
-        String sessionKey = getSessionKey();
-
         ValidateCodeVerificationFactory.getInstance().creator(validateCodeType.name())
-                .verification(this.sessionStrategy, request, sessionKey);
-        this.sessionStrategy.removeAttribute(request, sessionKey);
+                .verification(validateCodeRepository, request, validateCodeType);
+        validateCodeRepository.remove(request, validateCodeType);
     }
 
     /**
@@ -89,16 +80,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
      * @param validateCode：验证码
      */
     private void save(ServletWebRequest request, C validateCode) {
-        sessionStrategy.setAttribute(request, getSessionKey(), validateCode);
-    }
-
-    /**
-     * 获取sessionKey
-     *
-     * @return
-     */
-    private String getSessionKey() {
-        return SecurityConstant.SESSION_KEY_PREFIX + getValidateCodeType().toString().toUpperCase();
+        validateCodeRepository.save(request, validateCode, getValidateCodeType());
     }
 
     /**
