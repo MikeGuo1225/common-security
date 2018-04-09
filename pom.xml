@@ -10,7 +10,7 @@
 
   <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <common.security.version>1.2.0</common.security.version>
+      <common.security.version>1.5.0</common.security.version>
   </properties>
 
 

@@ -9,6 +9,7 @@
 
     <artifactId>common-security-app</artifactId>
     <packaging>jar</packaging>
+    <version>${common.security.version}</version>
 
     <name>common-security-app</name>
     <url>http://maven.apache.org</url>

@@ -47,6 +47,6 @@ public class MyUserDetailsService implements UserDetailsService, SocialUserDetai
         String password = passwordEncoder.encode("123456");
         logger.info("数据库密码是：" + password);
         // 这个User不一定必须用SpringSecurity的，可以写一个自定义实现UserDetails接口的类，然后把是否锁定等判断逻辑写进去。
-        return new SocialUser(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+        return new SocialUser(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("admin,ROLE_USER"));
     }
 }

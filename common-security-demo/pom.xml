@@ -17,9 +17,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>com.chentongwei</groupId>
             <artifactId>common-security-browser</artifactId>
+            <version>${common.security.version}</version>
+        </dependency>-->
+        <dependency>
+            <groupId>com.chentongwei</groupId>
+            <artifactId>common-security-app</artifactId>
             <version>${common.security.version}</version>
         </dependency>
         <dependency>
