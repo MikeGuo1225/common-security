@@ -43,7 +43,7 @@ public class AbstractSessionStrategy {
     private SecurityProperties securityProperties;
 
     /**
-     * @param invalidSessionUrl
+     * @param invalidSessionUrl：session失效URL
      */
     public AbstractSessionStrategy(String invalidSessionUrl) {
         Assert.isTrue(UrlUtils.isValidRedirectUrl(invalidSessionUrl), "url must start with '/' or with 'http(s)'");
@@ -56,6 +56,9 @@ public class AbstractSessionStrategy {
             request.getSession();
         }
 
+        /*
+         * session失效后若配置的是跳转页面，则进行跳转，否则返回JSON
+         */
         if (Objects.equals(SessionInvalidType.REDIRECT, securityProperties.getSession().getSessionInvalidType())) {
             logger.info("session失效,跳转到"+destinationUrl);
             redirectStrategy.sendRedirect(request, response, destinationUrl);

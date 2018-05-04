@@ -49,7 +49,7 @@ public class GeetestCode extends ValidateCode {
         return this;
     }
 
-    public GeetestCode GeetestLib(GeetestLib geetestLib) {
+    public GeetestCode geetestLib(GeetestLib geetestLib) {
         this.geetestLib = geetestLib;
         return this;
     }

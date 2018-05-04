@@ -48,6 +48,7 @@ public class CtwAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
                 response.sendRedirect(securityProperties.getBrowser().getLoginSuccessPage());
             } else {
                 // 会帮我们跳转到上一次请求的页面上
+                // TODO 支持跳转到自定义页面，若没设置则默认跳转到上一次请求的页面
                 super.onAuthenticationSuccess(request, response, authentication);
             }
         }

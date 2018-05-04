@@ -2,14 +2,16 @@ package com.chentongwei.security.app.validate;
 
 import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.enums.ValidateCodeType;
+import com.chentongwei.security.core.exception.ValidateCodeException;
 import com.chentongwei.security.core.validate.code.ValidateCode;
 import com.chentongwei.security.core.validate.verification.ValidateCodeRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Redis存验证码，实现前后分离
@@ -19,24 +21,22 @@ import org.springframework.web.context.request.ServletWebRequest;
 @Component
 public class RedisValidateCodeRepository implements ValidateCodeRepository {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
     @Autowired
     private RedisTemplate redisTemplate;
 
     @Override
     public void save(ServletWebRequest request, ValidateCode validateCode, ValidateCodeType validateCodeType) {
-        redisTemplate.opsForValue().set(getRedisKey(validateCodeType), validateCode);
+        redisTemplate.opsForValue().set(getRedisKey(request, validateCodeType), validateCode, 1800, TimeUnit.SECONDS);
     }
 
     @Override
     public ValidateCode get(ServletWebRequest request, ValidateCodeType validateCodeType) {
-        return (ValidateCode) redisTemplate.opsForValue().get(getRedisKey(validateCodeType));
+        return (ValidateCode) redisTemplate.opsForValue().get(getRedisKey(request, validateCodeType));
     }
 
     @Override
     public void remove(ServletWebRequest request, ValidateCodeType validateCodeType) {
-        redisTemplate.delete(getRedisKey(validateCodeType));
+        redisTemplate.delete(getRedisKey(request, validateCodeType));
     }
 
     /**
@@ -44,8 +44,12 @@ public class RedisValidateCodeRepository implements ValidateCodeRepository {
      *
      * @return
      */
-    private String getRedisKey(ValidateCodeType validateCodeType) {
-        logger.info("redisKey：", SecurityConstant.REDIS_KEY_PREFIX + validateCodeType.toString().toUpperCase());
-        return SecurityConstant.REDIS_KEY_PREFIX + validateCodeType.toString().toUpperCase();
+    private String getRedisKey(ServletWebRequest request, ValidateCodeType validateCodeType) {
+        String deviceId = request.getHeader("deviceId");
+        if (StringUtils.isBlank(deviceId)) {
+            throw new ValidateCodeException("请在请求头中携带deviceId参数");
+        }
+        return SecurityConstant.REDIS_KEY_PREFIX + validateCodeType.toString().toUpperCase() + "_" + deviceId;
     }
+
 }

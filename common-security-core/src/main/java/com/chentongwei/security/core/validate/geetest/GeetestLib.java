@@ -89,8 +89,10 @@ public class GeetestLib implements Serializable {
 	 * 标记用户请求验证时所携带的IP
 	 */
 	public String ipAddress  = "";
-	
-	
+
+	public GeetestLib() {
+	}
+
 	/**
 	 * 带参数构造函数
 	 * 

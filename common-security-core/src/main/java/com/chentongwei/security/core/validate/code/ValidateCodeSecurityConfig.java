@@ -20,6 +20,12 @@ public class ValidateCodeSecurityConfig extends SecurityConfigurerAdapter<Defaul
     @Autowired
     private Filter validateCodeFilter;
 
+    /**
+     * 将自定义验证码的过滤器加到其他过滤器之前
+     *
+     * @param http：http
+     * @throws Exception
+     */
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(validateCodeFilter, AbstractPreAuthenticatedProcessingFilter.class);

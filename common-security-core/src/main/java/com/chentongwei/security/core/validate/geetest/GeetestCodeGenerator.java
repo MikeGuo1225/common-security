@@ -32,7 +32,7 @@ public class GeetestCodeGenerator implements ValidateCodeGenerator {
         resStr = gtSdk.getResponseStr();
         GeetestCode geetestCode = JSON.parseObject(resStr, GeetestCode.class);
         geetestCode.plusExpireIn(securityProperties.getCode().getGeetest().getExpireIn())
-                    .userid(userid).gtServerStatus(gtServerStatus).GeetestLib(gtSdk);
+                    .userid(userid).gtServerStatus(gtServerStatus).geetestLib(gtSdk);
         return geetestCode;
     }
 

@@ -40,6 +40,7 @@ public class CtwAuthenticationFailureHandler extends SimpleUrlAuthenticationFail
             response.getWriter().write(JSON.toJSONString(new SimpleResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage(), null)));
         } else {
             response.setContentType("text/html;charset=UTF-8");
+            // TODO 失败跳转到自定义页面。
             super.onAuthenticationFailure(request, response, exception);
         }
 

@@ -15,7 +15,7 @@ import java.io.IOException;
 public class CtwInvalidSessionStrategy extends AbstractSessionStrategy implements InvalidSessionStrategy {
 
     /**
-     * @param invalidSessionUrl
+     * @param invalidSessionUrl：session失效URL
      */
     public CtwInvalidSessionStrategy(String invalidSessionUrl) {
         super(invalidSessionUrl);

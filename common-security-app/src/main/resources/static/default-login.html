@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<body>
+<h2>标准登录页面</h2>
+<h3>表单登录</h3>
+<form action="login" method="post">
+    <table>
+        <tr>
+            <td>用户名:</td>
+            <td><input type="text" name="username"></td>
+        </tr>
+        <tr>
+            <td>密码:</td>
+            <td><input type="password" name="password"></td>
+        </tr>
+        <tr>
+            <td>图形验证码:</td>
+            <td>
+                <input type="text" name="imageCode">
+                <img id="imageCode" src="" onclick="getImageCode()" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan='2'><input name="remember-me" type="checkbox" value="true" />记住我</td>
+        </tr>
+        <tr>
+            <td colspan="2"><button type="submit">登录</button></td>
+        </tr>
+    </table>
+</form>
+<h3>短信登录</h3>
+<form action="mobile" method="post">
+    <table>
+        <tr>
+            <td>手机号:</td>
+            <td><input type="text" name="mobile" value="13012345678"></td>
+        </tr>
+        <tr>
+            <td>短信验证码:</td>
+            <td>
+                <input type="text" name="smsCode">
+                <a href="code/sms?mobile=13012345678">发送验证码</a>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><button type="submit">登录</button></td>
+        </tr>
+    </table>
+</form>
+<br>
+<h3>社交登录</h3>
+<a href="/auth/qq">QQ登录</a>
+<br>
+<a href="/auth/weixintest">微信登录</a>
+<hr />
+<br>
+<div class="row cl">
+    <div id="captcha" class="formControls col-xs-8 col-xs-offset-3">
+        <p id="wait">正在加载验证码......</p>
+    </div>
+</div>
+<button id="popup-submit">测试登录极验证</button>
+</body>
+<script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+<script src="https://static.geetest.com/static/tools/gt.js"></script>
+<script>
+
+    window.onload = function () {
+        getImageCode();
+    }
+
+    function getImageCode() {
+        $.ajax({
+            url: "code/image",
+            type: "get",
+            success: function (data) {
+                $("#imageCode").attr("src", "data:image/jpeg;base64," + data);
+            }
+        });
+    }
+
+    $.ajax({
+        // 获取id，challenge，success（是否启用failback）
+        url: "code/geetest?t=" + (new Date()).getTime(), // 加随机数防止缓存
+        type: "get",
+        dataType: "json",
+        headers: {
+            "deviceId": "123"
+        },
+        success: function (data) {
+            console.log("data:" , data);
+            // 使用initGeetest接口
+            // 参数1：配置参数
+            // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+            initGeetest({
+                gt: data.gt,
+                challenge: data.challenge,
+                product: "popup", // 产品形式，包括：float，embed，popup。注意只对PC版验证码有效
+                offline: !data.success // 表示用户后台检测极验服务器是否宕机，与SDK配合，用户一般不需要关注
+            }, handlerPopup);
+        }
+    });
+    // 代码详细说明
+    var handlerPopup = function (captchaObj) {
+        console.info(captchaObj)
+        // 注册提交按钮事件，比如在登陆页面的登陆按钮
+        $("#popup-submit").click(function () {
+            // 此处省略在登陆界面中，获取登陆数据的一些步骤
+
+            // 先校验是否点击了验证码
+            var validate = captchaObj.getValidate();
+            console.log(validate)
+            if (!validate) {
+                alert('请先完成验证！');
+                return;
+            }
+            // 提交验证码信息，比如登陆页面，你需要提交登陆信息，用户名和密码等登陆数据
+            $.ajax({
+                url: "login",
+                type: "post",
+                // dataType: "json",
+                data: {
+                    // 用户名和密码等其他数据，自己获取，不做演示
+                    username:"13123",
+                    password:"123456",
+                    // 验证码数据，这些数据不用自己获取
+                    // 这是二次验证所需的三个值
+                    // 当然，你也可以直接设置验证码单独校验，省略其他信息
+                    geetest_challenge: validate.geetest_challenge,
+                    geetest_validate: validate.geetest_validate,
+                    geetest_seccode: validate.geetest_seccode
+                },
+                headers: {
+                    "deviceId": "123"
+                },
+                // 这里是正确返回处理结果的处理函数
+                // 假设你就返回了1，2，3
+                // 当然，正常情况是返回JSON数据
+                success: function (result) {
+                    alert("登陆成功！" + result);
+                }
+            });
+        });
+        // 弹出式需要绑定触发验证码弹出按钮
+        // 比如在登陆页面，这个触发按钮就是登陆按钮
+//        captchaObj.bindOn("#popup-submit");
+
+        // 将验证码加到id为captcha的元素里
+        // 验证码将会在下面指定的元素中显示出来
+        captchaObj.appendTo("#captcha");
+        captchaObj.onReady(function () {
+            $("#wait").hide();
+        });
+    };
+</script>
+</html>

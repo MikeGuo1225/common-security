@@ -28,6 +28,9 @@ public class CtwLogoutSuccessHandler implements LogoutSuccessHandler {
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        /*
+         * 如果配置了退出到的页面，则跳转到自定义的页面上去。否则返回JSON
+         */
         if (! StringUtils.equals(SecurityConstant.DEFAULT_LOGIN_PAGE_URL, logoutSuccessUrl)) {
             response.sendRedirect(logoutSuccessUrl);
         } else {

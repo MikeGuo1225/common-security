@@ -44,6 +44,7 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
      */
     @Autowired
     private ValidateCodeSecurityConfig validateCodeSecurityConfig;
+    // 短信验证配置
     @Autowired
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
@@ -75,7 +76,7 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
     protected void configure(HttpSecurity http) throws Exception {
         // 表单登录以及成功/失败处理
         authenticationConfig(http);
-        // 验证码（image+sms）
+        // 验证码（image+sms+geetest）
         HttpSecurity httpSecurity =
                 http.apply(validateCodeSecurityConfig)
                     .and()
@@ -145,6 +146,7 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
         urls.add(securityProperties.getBrowser().getLoginPage());
         urls.add(securityProperties.getBrowser().getRegisterPage());
         urls.add(securityProperties.getSession().getSessionInvalidUrl());
+        // 若配置了退出登录的Url，则也add到无权限即可访问的list里
         if (! StringUtils.equals(SecurityConstant.DEFAULT_LOGIN_PAGE_URL, securityProperties.getLogout().getLogoutSuccessUrl())) {
             urls.add(securityProperties.getLogout().getLogoutSuccessUrl());
         }
