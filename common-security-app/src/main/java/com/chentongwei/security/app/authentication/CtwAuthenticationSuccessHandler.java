@@ -20,6 +20,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 为什么不实现接口，而是继承SavedRequestAwareAuthenticationSuccessHandler类的方式？
@@ -40,12 +42,13 @@ public class CtwAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
     @Autowired
     private AuthorizationServerTokenServices authorizationServerTokenServices;
 
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         logger.info("登录成功！");
 
-
+        /**
+         * 参考 BasicAuthenticationFilter
+         */
         String header = request.getHeader("Authorization");
 
         if (header == null || !header.startsWith("Basic ")) {
@@ -63,7 +66,7 @@ public class CtwAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
         // 校验
         if (null == clientDetails) {
             throw new UnapprovedClientAuthenticationException("clientId对应的配置信息不存在：" + clientId);
-        } else if (!StringUtils.equals(clientDetails.getClientSecret(), clientSecret)) {
+        } else if (! StringUtils.equals(clientDetails.getClientSecret(), clientSecret)) {
             // 判断传来的密码和配置的密码是否一致
             throw new UnapprovedClientAuthenticationException("clientSecret不匹配");
         }
@@ -76,8 +79,14 @@ public class CtwAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
 
         OAuth2AccessToken accessToken = authorizationServerTokenServices.createAccessToken(oAuth2Authentication);
 
+        Map<String, Object> resultMap = new HashMap();
+
+        response.setHeader("Authorization", "bearer " + accessToken.getValue());
+
+        resultMap.put("accessToken", accessToken);
+        resultMap.put("authentication", authentication);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JSON.toJSONString(accessToken));
+        response.getWriter().write(JSON.toJSONString(resultMap));
 
     }
 

@@ -26,7 +26,7 @@ public class RedisValidateCodeRepository implements ValidateCodeRepository {
 
     @Override
     public void save(ServletWebRequest request, ValidateCode validateCode, ValidateCodeType validateCodeType) {
-        redisTemplate.opsForValue().set(getRedisKey(request, validateCodeType), validateCode, 1800, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(getRedisKey(request, validateCodeType), validateCode, 60, TimeUnit.SECONDS);
     }
 
     @Override

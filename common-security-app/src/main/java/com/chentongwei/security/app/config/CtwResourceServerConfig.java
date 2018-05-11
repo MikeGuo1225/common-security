@@ -1,5 +1,6 @@
 package com.chentongwei.security.app.config;
 
+import com.chentongwei.security.app.social.OpenIdAuthenticationSecurityConfig;
 import com.chentongwei.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.validate.code.ValidateCodeSecurityConfig;
@@ -32,6 +33,10 @@ public class CtwResourceServerConfig extends ResourceServerConfigurerAdapter {
     private ValidateCodeSecurityConfig validateCodeSecurityConfig;
     @Autowired
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
+    @Autowired
+    private OpenIdAuthenticationSecurityConfig openIdAuthenticationSecurityConfig;
+
     /**
      * Spring Social相关
      */
@@ -48,26 +53,28 @@ public class CtwResourceServerConfig extends ResourceServerConfigurerAdapter {
             .loginProcessingUrl(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_FORM)
             .successHandler(ctwAuthenticationSuccessHandler)
             .failureHandler(ctwAuthenticationFailureHandler)
-                .and()
-                .apply(validateCodeSecurityConfig)
-                .and()
-                .apply(smsCodeAuthenticationSecurityConfig)
-                .and()
-                .apply(ctwSocialSecurityConfig)
-                .and()
-                // 权限设置
-                .authorizeRequests()
-                // 任何请求都必须经过身份认证，排除如下
-                .antMatchers(
-                        getPermitUrls()
-                ).permitAll()
-                // 任何请求
-                .anyRequest()
-                // 都必须经过身份认证
-                .authenticated()
-                .and()
-                // 先加上这句话，否则登录的时候会出现403错误码，Could not verify the provided CSRF token because your session was not found.
-                .csrf().disable();
+            .and()
+            .apply(validateCodeSecurityConfig)
+            .and()
+            .apply(smsCodeAuthenticationSecurityConfig)
+            .and()
+            .apply(ctwSocialSecurityConfig)
+            .and()
+            .apply(openIdAuthenticationSecurityConfig)
+            .and()
+            // 权限设置
+            .authorizeRequests()
+            // 任何请求都必须经过身份认证，排除如下
+            .antMatchers(
+                    getPermitUrls()
+            ).permitAll()
+            // 任何请求
+            .anyRequest()
+            // 都必须经过身份认证
+            .authenticated()
+            .and()
+            // 先加上这句话，否则登录的时候会出现403错误码，Could not verify the provided CSRF token because your session was not found.
+            .csrf().disable();
     }
 
     /**
@@ -79,8 +86,10 @@ public class CtwResourceServerConfig extends ResourceServerConfigurerAdapter {
         urls.add(SecurityConstant.DEFAULT_LOGIN_PAGE_URL);
         urls.add(SecurityConstant.DEFAULT_UNAUTHENTICATION_URL);
         urls.add(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_MOBILE);
+        urls.add(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_OPENID);
         urls.add(SecurityConstant.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*");
         urls.add(SecurityConstant.DEFAULT_GET_SOCIAL_USER_INFO);
+        urls.add("/social/signUp");
         return urls.toArray(new String[urls.size()]);
     }
 }

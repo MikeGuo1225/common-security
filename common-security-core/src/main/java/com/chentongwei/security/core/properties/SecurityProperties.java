@@ -1,6 +1,7 @@
 package com.chentongwei.security.core.properties;
 
 import com.chentongwei.security.core.properties.code.ValidateCodeProperties;
+import com.chentongwei.security.core.properties.oauth2.OAuth2Properties;
 import com.chentongwei.security.core.properties.social.SocialProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -22,7 +23,9 @@ public class SecurityProperties {
 
     private SessionProperties session = new SessionProperties();
 
-    public LogoutProperties logout = new LogoutProperties();
+    private LogoutProperties logout = new LogoutProperties();
+
+    private OAuth2Properties oauth2 = new OAuth2Properties();
 
     public BrowserProperties getBrowser() {
         return browser;
@@ -70,5 +73,13 @@ public class SecurityProperties {
 
     public void setLogout(LogoutProperties logout) {
         this.logout = logout;
+    }
+
+    public OAuth2Properties getOauth2() {
+        return oauth2;
+    }
+
+    public void setOauth2(OAuth2Properties oauth2) {
+        this.oauth2 = oauth2;
     }
 }

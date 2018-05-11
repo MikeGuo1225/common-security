@@ -3,6 +3,7 @@ package com.chentongwe.web;
 import com.alibaba.fastjson.JSON;
 import com.chentongwe.entity.User;
 import com.chentongwe.security.MyUserDetailsService;
+import com.chentongwei.security.app.social.signup.AppSignUpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.social.connect.Connection;
@@ -26,6 +27,14 @@ public class LoginController {
     @Autowired
     private ProviderSignInUtils providerSignInUtils;
 
+    @Autowired
+    private AppSignUpUtils appSignUpUtils;
+
+    @RequestMapping("/hello")
+    public String hello() {
+        return "hello";
+    }
+
     @RequestMapping("/regist")
     public void regist(User user, HttpServletRequest request) {
 
@@ -37,8 +46,9 @@ public class LoginController {
         System.out.println(JSON.toJSONString(connection));
 
         String userId = user.getUsername();
-        providerSignInUtils.doPostSignUp(userId, new ServletWebRequest(request));
-        return;
+//        providerSignInUtils.doPostSignUp(userId, new ServletWebRequest(request));
+
+        appSignUpUtils.doPostSignUp(new ServletWebRequest(request), userId);
     }
 
     @RequestMapping("/login")

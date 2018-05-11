@@ -33,6 +33,11 @@ public interface SecurityConstant {
     String DEFAULT_LOGIN_PROCESSING_URL_MOBILE = "/mobile";
 
     /**
+     * 默认的openid登录请求处理url
+     */
+    String DEFAULT_LOGIN_PROCESSING_URL_OPENID = "/openid";
+
+    /**
      * 验证图片验证码时，http请求中默认的携带图片验证码信息的参数的名称
      */
     String DEFAULT_PARAMETER_NAME_CODE_IMAGE = "imageCode";
@@ -52,6 +57,14 @@ public interface SecurityConstant {
      */
     String DEFAULT_PARAMETER_NAME_MOBILE = "mobile";
 
+    /**
+     * 第三方登录时，传递openId的参数的名称
+     */
+    String DEFAULT_PARAMETER_NAME_OPENID = "openId";
+    /**
+     * 第三方登录时，传递providerId的参数的名称
+     */
+    String DEFAULT_PARAMETER_NAME_PROVIDERID = "providerId";
     /**
      * 验证码放入session时的前缀
      */

@@ -55,7 +55,7 @@
 <h3>社交登录</h3>
 <a href="/auth/qq">QQ登录</a>
 <br>
-<a href="/auth/weixintest">微信登录</a>
+<a href="/auth/weixin">微信登录</a>
 <hr />
 <br>
 <div class="row cl">
@@ -113,7 +113,6 @@
 
             // 先校验是否点击了验证码
             var validate = captchaObj.getValidate();
-            console.log(validate)
             if (!validate) {
                 alert('请先完成验证！');
                 return;

@@ -20,6 +20,10 @@ public class SocialConfig extends SocialConfigurerAdapter {
     @Autowired
     private SecurityProperties securityProperties;
 
+    // 后处理器，app用，browser不用，所以required=false
+    @Autowired(required = false)
+    private SocialAuthenticationFilterPostProcessor socialAuthenticationFilterPostProcessor;
+
     /**
      * SpringSocial过滤器，加到BrowserSecurityConfig里，使之生效。
      *
@@ -48,6 +52,7 @@ public class SocialConfig extends SocialConfigurerAdapter {
          * 写一个注册页，重新赋值给signupUrl，加到权限中，使之不拦截。也就是现在这种做法。
          */
         configurer.signupUrl(securityProperties.getBrowser().getRegisterPage());
+        configurer.setSocialAuthenticationFilterPostProcessor(socialAuthenticationFilterPostProcessor);
         return configurer;
     }
 

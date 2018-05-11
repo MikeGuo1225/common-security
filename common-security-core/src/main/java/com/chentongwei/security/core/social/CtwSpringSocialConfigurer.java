@@ -10,6 +10,9 @@ public class CtwSpringSocialConfigurer extends SpringSocialConfigurer {
 
     private String filterProcessesUrl;
 
+    // 后处理器，app用
+    private SocialAuthenticationFilterPostProcessor socialAuthenticationFilterPostProcessor;
+
     public CtwSpringSocialConfigurer(String filterProcessesUrl) {
         this.filterProcessesUrl = filterProcessesUrl;
     }
@@ -31,6 +34,20 @@ public class CtwSpringSocialConfigurer extends SpringSocialConfigurer {
     protected <T> T postProcess(T object) {
         SocialAuthenticationFilter filter = (SocialAuthenticationFilter) super.postProcess(object);
         filter.setFilterProcessesUrl(this.filterProcessesUrl);
+
+        // app用，browser的话不会进入判断
+        if (null != socialAuthenticationFilterPostProcessor) {
+            socialAuthenticationFilterPostProcessor.process(filter);
+        }
+
         return (T) filter;
+    }
+
+    public SocialAuthenticationFilterPostProcessor getSocialAuthenticationFilterPostProcessor() {
+        return socialAuthenticationFilterPostProcessor;
+    }
+
+    public void setSocialAuthenticationFilterPostProcessor(SocialAuthenticationFilterPostProcessor socialAuthenticationFilterPostProcessor) {
+        this.socialAuthenticationFilterPostProcessor = socialAuthenticationFilterPostProcessor;
     }
 }
