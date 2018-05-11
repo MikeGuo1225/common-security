@@ -1,6 +1,7 @@
 package com.chentongwei.security.app.authentication;
 
 import com.alibaba.fastjson.JSON;
+import com.chentongwei.security.core.properties.SecurityProperties;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -37,6 +38,8 @@ public class CtwAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
+    private SecurityProperties securityProperties;
+    @Autowired
     private ClientDetailsService clientDetailsService;
 
     @Autowired
@@ -49,7 +52,7 @@ public class CtwAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
         /**
          * 参考 BasicAuthenticationFilter
          */
-        String header = request.getHeader("Authorization");
+        /*String header = request.getHeader("Authorization");
 
         if (header == null || !header.startsWith("Basic ")) {
             throw new UnapprovedClientAuthenticationException("请求头中无client信息");
@@ -59,7 +62,10 @@ public class CtwAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
         assert tokens.length == 2;
 
         String clientId = tokens[0];
-        String clientSecret = tokens[1];
+        String clientSecret = tokens[1];*/
+
+        String clientId = securityProperties.getOauth2().getClient().getClientId();
+        String clientSecret = securityProperties.getOauth2().getClient().getClientSecret();
 
         ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
 
@@ -82,9 +88,9 @@ public class CtwAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
         Map<String, Object> resultMap = new HashMap();
 
         response.setHeader("Authorization", "bearer " + accessToken.getValue());
-
-        resultMap.put("accessToken", accessToken);
+        response.setHeader("refreshToken", accessToken.getRefreshToken().getValue());
         resultMap.put("authentication", authentication);
+
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(JSON.toJSONString(resultMap));
 

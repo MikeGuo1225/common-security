@@ -1,6 +1,7 @@
 package com.chentongwei.security.app.config;
 
 import com.chentongwei.security.app.social.OpenIdAuthenticationSecurityConfig;
+import com.chentongwei.security.app.util.PermitUrlsUtil;
 import com.chentongwei.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.validate.code.ValidateCodeSecurityConfig;
@@ -66,7 +67,7 @@ public class CtwResourceServerConfig extends ResourceServerConfigurerAdapter {
             .authorizeRequests()
             // 任何请求都必须经过身份认证，排除如下
             .antMatchers(
-                    getPermitUrls()
+                    PermitUrlsUtil.getPermitUrls()
             ).permitAll()
             // 任何请求
             .anyRequest()
@@ -77,19 +78,4 @@ public class CtwResourceServerConfig extends ResourceServerConfigurerAdapter {
             .csrf().disable();
     }
 
-    /**
-     * 获取所有的无需权限即可访问的urls
-     * @return
-     */
-    private String[] getPermitUrls() {
-        List<String> urls = new LinkedList<>();
-        urls.add(SecurityConstant.DEFAULT_LOGIN_PAGE_URL);
-        urls.add(SecurityConstant.DEFAULT_UNAUTHENTICATION_URL);
-        urls.add(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_MOBILE);
-        urls.add(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_OPENID);
-        urls.add(SecurityConstant.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*");
-        urls.add(SecurityConstant.DEFAULT_GET_SOCIAL_USER_INFO);
-        urls.add("/social/signUp");
-        return urls.toArray(new String[urls.size()]);
-    }
 }

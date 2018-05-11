@@ -2,6 +2,7 @@ package com.chentongwei.security.app.jwt;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.chentongwei.security.app.util.PermitUrlsUtil;
 import com.chentongwei.security.core.properties.SecurityProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -22,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -44,10 +47,10 @@ public class JwtTokenValidateFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        // 排除登录、生成token的路径，并且如果是options请求是cors跨域预请求，设置allow对应头信息
-        if (Objects.equals("/oauth/token", request.getRequestURI())
-                || Objects.equals("/login", request.getRequestURI())
-                || Objects.equals(RequestMethod.OPTIONS.toString(), request.getMethod())) {
+        // 排除路径，并且如果是options请求是cors跨域预请求，设置allow对应头信息
+        List<String> permitUrls = Arrays.asList(PermitUrlsUtil.getPermitUrls());
+
+        if (permitUrls.contains(request.getRequestURI()) || Objects.equals(RequestMethod.OPTIONS.toString(), request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -56,6 +59,7 @@ public class JwtTokenValidateFilter implements Filter {
         String refreshTokenParam = request.getHeader("refreshToken");
 
         if (header == null || ! header.startsWith("bearer ") || StringUtils.isBlank(refreshTokenParam)) {
+            logger.error("url===>【{}】", request.getRequestURL());
             throw new UnapprovedClientAuthenticationException("不合法的token");
         }
 
@@ -85,7 +89,7 @@ public class JwtTokenValidateFilter implements Filter {
             params.add("grant_type", "refresh_token");
             params.add("refresh_token", refreshTokenParam);
 
-            JSONObject responseEntity = postUrl("http://localhost/oauth/token", params);
+            JSONObject responseEntity = postUrl("http://" + securityProperties.getOauth2().getRefreshTokenUrl() + "/oauth/token", params);
             System.out.println(responseEntity);
 
             String accessToken = responseEntity.get("access_token").toString();

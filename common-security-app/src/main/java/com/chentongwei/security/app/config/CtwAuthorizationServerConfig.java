@@ -1,8 +1,6 @@
 package com.chentongwei.security.app.config;
 
 import com.chentongwei.security.core.properties.SecurityProperties;
-import com.chentongwei.security.core.properties.oauth2.OAuth2ClientProperties;
-import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
