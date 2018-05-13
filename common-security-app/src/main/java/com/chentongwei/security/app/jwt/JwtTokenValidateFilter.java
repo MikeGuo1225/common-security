@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.oauth2.common.exceptions.UnapprovedClientAuthenticationException;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,9 +38,11 @@ public class JwtTokenValidateFilter implements Filter {
     @Autowired
     private SecurityProperties securityProperties;
 
+    private AntPathMatcher antPathMatcher = null;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
+        antPathMatcher = new AntPathMatcher();
     }
 
     @Override
@@ -48,12 +51,16 @@ public class JwtTokenValidateFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         // 排除路径，并且如果是options请求是cors跨域预请求，设置allow对应头信息
-        List<String> permitUrls = Arrays.asList(PermitUrlsUtil.getPermitUrls());
+        String[] permitUrls = PermitUrlsUtil.getPermitUrls();
 
-        if (permitUrls.contains(request.getRequestURI()) || Objects.equals(RequestMethod.OPTIONS.toString(), request.getMethod())) {
-            filterChain.doFilter(request, response);
-            return;
+        for (int i = 0, length = permitUrls.length; i < length; i ++) {
+            if (antPathMatcher.match(permitUrls[i], request.getRequestURI())
+                    || Objects.equals(RequestMethod.OPTIONS.toString(), request.getMethod())) {
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
+
         String header = request.getHeader("Authorization");
 
         String refreshTokenParam = request.getHeader("refreshToken");
@@ -82,14 +89,14 @@ public class JwtTokenValidateFilter implements Filter {
             return;
         }
         // 300s =》5分钟，判断5分钟内过期有操作的话，就刷新token
-        if (expireSeconds < 7200) {
+        if (expireSeconds < 300) {
             logger.info("token即将过期，刷新一波...【{}】", expireSeconds);
             // 刷新
             MultiValueMap<String, String> params = new LinkedMultiValueMap();
             params.add("grant_type", "refresh_token");
             params.add("refresh_token", refreshTokenParam);
 
-            JSONObject responseEntity = postUrl("http://" + securityProperties.getOauth2().getRefreshTokenUrl() + "/oauth/token", params);
+            JSONObject responseEntity = postUrl(securityProperties.getOauth2().getRefreshTokenUrl() + "/oauth/token", params);
             System.out.println(responseEntity);
 
             String accessToken = responseEntity.get("access_token").toString();

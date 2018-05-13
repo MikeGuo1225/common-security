@@ -45,7 +45,7 @@ public class AppSignUpUtils {
     }
 
     private String getKey(WebRequest request) {
-        String deviceId = request.getHeader("deviceId");
+        String deviceId = request.getParameter("deviceId");
         if (StringUtils.isBlank(deviceId)) {
             throw new AppSecretException("设备id不能为空");
         }

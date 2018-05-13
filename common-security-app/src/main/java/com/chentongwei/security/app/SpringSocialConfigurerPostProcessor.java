@@ -6,6 +6,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
+import java.util.Random;
+import java.util.UUID;
+
 /**
  * 所有的bean在初始化后都会经过这个类的这两个方法，
  * 此处用于将注册页面给改掉，因为app直接返回json，不会跳转到注册页面
@@ -24,7 +27,8 @@ public class SpringSocialConfigurerPostProcessor implements BeanPostProcessor {
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (StringUtils.equals(beanName, "ctwSocialSecurityConfig")) {
             CtwSpringSocialConfigurer configurer = (CtwSpringSocialConfigurer) bean;
-            configurer.signupUrl("/social/signUp");
+            // TODO deviceId加密保证唯一
+            configurer.signupUrl("/social/signUp?deviceId=" + UUID.randomUUID().toString());
             return configurer;
         }
         return bean;

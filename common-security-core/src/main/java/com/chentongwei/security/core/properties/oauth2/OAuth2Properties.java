@@ -8,7 +8,7 @@ public class OAuth2Properties {
     /**
      * 刷新token的url，比如localhost:8080
      */
-    private String refreshTokenUrl = "localhost:80";
+    private String refreshTokenUrl = "http://localhost:80";
 
     /**
      * jwt密签key
