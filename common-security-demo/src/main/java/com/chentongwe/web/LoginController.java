@@ -46,9 +46,7 @@ public class LoginController {
         System.out.println(JSON.toJSONString(connection));
 
         String userId = user.getUsername();
-//        providerSignInUtils.doPostSignUp(userId, new ServletWebRequest(request));
-
-        appSignUpUtils.doPostSignUp(/*new ServletWebRequest(*/request/*)*/, userId);
+        appSignUpUtils.doPostSignUp(request, userId);
     }
 
     @RequestMapping("/login")

@@ -48,20 +48,18 @@ public class CtwResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         // 表单登录
         http.formLogin()
-            // 默认表单登录页
-            .loginPage(SecurityConstant.DEFAULT_UNAUTHENTICATION_URL)
             // 登录接口
             .loginProcessingUrl(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_FORM)
             .successHandler(ctwAuthenticationSuccessHandler)
             .failureHandler(ctwAuthenticationFailureHandler)
             .and()
-            .apply(validateCodeSecurityConfig)
+                .apply(validateCodeSecurityConfig)
             .and()
-            .apply(smsCodeAuthenticationSecurityConfig)
+                .apply(smsCodeAuthenticationSecurityConfig)
             .and()
-            .apply(ctwSocialSecurityConfig)
+                .apply(ctwSocialSecurityConfig)
             .and()
-            .apply(openIdAuthenticationSecurityConfig)
+                .apply(openIdAuthenticationSecurityConfig)
             .and()
             // 权限设置
             .authorizeRequests()

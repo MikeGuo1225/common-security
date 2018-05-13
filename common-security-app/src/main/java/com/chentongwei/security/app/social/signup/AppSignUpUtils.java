@@ -9,7 +9,6 @@ import org.springframework.social.connect.ConnectionData;
 import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.TimeUnit;
@@ -46,8 +45,6 @@ public class AppSignUpUtils {
     }
 
     private String getKey(HttpServletRequest request) {
-        // TODO
-//        String deviceId = request.getParameter("deviceId");
         String deviceId = request.getAttribute("deviceId").toString();
         if (StringUtils.isBlank(deviceId)) {
             throw new AppSecretException("设备id不能为空");

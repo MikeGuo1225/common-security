@@ -16,6 +16,12 @@ public class SocialProperties {
     private String autoSignUp = "false";
 
     /**
+     * TODO
+     * 不自动注册，跳转到的url，QQ登录后发现未注册（db没数据），则跳转到的注册的url
+     */
+    private String defaultRegistUrl;
+
+    /**
      * 表前缀
      */
     private String tablePrefix;
