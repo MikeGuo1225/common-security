@@ -11,6 +11,7 @@ import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,11 +27,11 @@ public class AppSignUpUtils {
     @Autowired
     private ConnectionFactoryLocator connectionFactoryLocator;
 
-    public void saveConnectionData(WebRequest request, ConnectionData connectionData) {
+    public void saveConnectionData(HttpServletRequest request, ConnectionData connectionData) {
         redisTemplate.opsForValue().set(getKey(request), connectionData, 10, TimeUnit.MINUTES);
     }
 
-    public void doPostSignUp(WebRequest request, String userId) {
+    public void doPostSignUp(HttpServletRequest request, String userId) {
         String key = getKey(request);
 
         if (! redisTemplate.hasKey(key)) {
@@ -44,8 +45,10 @@ public class AppSignUpUtils {
         redisTemplate.delete(key);
     }
 
-    private String getKey(WebRequest request) {
-        String deviceId = request.getParameter("deviceId");
+    private String getKey(HttpServletRequest request) {
+        // TODO
+//        String deviceId = request.getParameter("deviceId");
+        String deviceId = request.getAttribute("deviceId").toString();
         if (StringUtils.isBlank(deviceId)) {
             throw new AppSecretException("设备id不能为空");
         }

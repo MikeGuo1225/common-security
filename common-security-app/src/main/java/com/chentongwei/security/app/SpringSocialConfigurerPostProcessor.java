@@ -27,8 +27,8 @@ public class SpringSocialConfigurerPostProcessor implements BeanPostProcessor {
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (StringUtils.equals(beanName, "ctwSocialSecurityConfig")) {
             CtwSpringSocialConfigurer configurer = (CtwSpringSocialConfigurer) bean;
-            // TODO deviceId加密保证唯一
-            configurer.signupUrl("/social/signUp?deviceId=" + UUID.randomUUID().toString());
+            // TODO deviceId加密保证唯一，每次都不进入此方法，有bug ?deviceId=" + UUID.randomUUID().toString()
+            configurer.signupUrl("/social/signUp");
             return configurer;
         }
         return bean;
