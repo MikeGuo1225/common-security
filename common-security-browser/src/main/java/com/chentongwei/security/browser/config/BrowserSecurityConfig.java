@@ -2,6 +2,7 @@ package com.chentongwei.security.browser.config;
 
 import com.chentongwei.security.core.authentication.AbstractChannelSecurityConfig;
 import com.chentongwei.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
+import com.chentongwei.security.core.authorize.AuthorizeConfigManager;
 import com.chentongwei.security.core.constant.SecurityConstant;
 import com.chentongwei.security.core.enums.FrameDisableStatus;
 import com.chentongwei.security.core.logout.CtwLogoutSuccessHandler;
@@ -11,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
@@ -72,6 +74,10 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
     @Autowired
     private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
 
+
+    @Autowired
+    private AuthorizeConfigManager authorizeConfigManager;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // 表单登录以及成功/失败处理
@@ -113,6 +119,8 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                     .antMatchers(
                             getPermitUrls()
                     ).permitAll()
+                    // 配置/user请求，只有配置了admin角色后才能访问。
+                    .antMatchers(HttpMethod.GET, "/user/**").hasRole("admin")
                     // 任何请求
                     .anyRequest()
                     // 都必须经过身份认证
@@ -124,6 +132,9 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
         if (Objects.equals(FrameDisableStatus.ALLOW.status(), securityProperties.getBrowser().getFrameDisable())) {
             httpSecurity.headers().frameOptions().disable();
         }
+
+        authorizeConfigManager.config(http.authorizeRequests());
+
     }
 
     /**
@@ -138,11 +149,11 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
             urls = new LinkedList<>(Arrays.asList(urlArray));
         }
 
-        urls.add(SecurityConstant.DEFAULT_LOGIN_PAGE_URL);
         urls.add(SecurityConstant.DEFAULT_UNAUTHENTICATION_URL);
-        urls.add(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_MOBILE);
-        urls.add(SecurityConstant.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*");
-        urls.add(SecurityConstant.DEFAULT_GET_SOCIAL_USER_INFO);
+//        urls.add(SecurityConstant.DEFAULT_LOGIN_PAGE_URL);
+//        urls.add(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_MOBILE);
+//        urls.add(SecurityConstant.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*");
+//        urls.add(SecurityConstant.DEFAULT_GET_SOCIAL_USER_INFO);
         urls.add(securityProperties.getBrowser().getLoginPage());
         urls.add(securityProperties.getBrowser().getRegisterPage());
         urls.add(securityProperties.getSession().getSessionInvalidUrl());

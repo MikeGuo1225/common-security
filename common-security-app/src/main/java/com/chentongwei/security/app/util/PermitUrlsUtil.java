@@ -16,11 +16,11 @@ public class PermitUrlsUtil {
      */
     public static String[] getPermitUrls() {
         List<String> urls = new LinkedList<>();
-        urls.add(SecurityConstant.DEFAULT_LOGIN_PAGE_URL);
-        urls.add(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_MOBILE);
+//        urls.add(SecurityConstant.DEFAULT_LOGIN_PAGE_URL);
+//        urls.add(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_MOBILE);
+//        urls.add(SecurityConstant.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*");
+//        urls.add(SecurityConstant.DEFAULT_GET_SOCIAL_USER_INFO);
         urls.add(SecurityConstant.DEFAULT_LOGIN_PROCESSING_URL_OPENID);
-        urls.add(SecurityConstant.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*");
-        urls.add(SecurityConstant.DEFAULT_GET_SOCIAL_USER_INFO);
         urls.add("/social/signUp");
         urls.add("/oauth/token");
         urls.add("/favicon.ico");

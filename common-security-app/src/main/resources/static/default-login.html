@@ -53,7 +53,7 @@
 </form>
 <br>
 <h3>社交登录</h3>
-<a href="/auth/qq">QQ登录</a>
+<a id="qq" href="/auth/qq">QQ登录</a>
 <button onclick="qqLoginBTN()">QQ登录BTN</button>
 <br>
 <a href="/auth/weixin">微信登录</a>
@@ -70,15 +70,26 @@
 <script src="https://static.geetest.com/static/tools/gt.js"></script>
 <script>
 
+
+    $(function () {
+        console.info(1);
+        var iframe = document.createElement('iframe');
+        var randomId = 'fid' + Math.random().toString();
+        iframe.id = randomId;
+        document.getElementById("qq").target = randomId;
+        iframe.onload = function(data){ console.log(data); }
+        document.body.appendChild(iframe)
+    })
+
     function qqLoginBTN() {
         $.ajax({
             url: "/auth/qq",
             type: "get",
-            /*headers: {
-                "deviceId": "123"
-            },*/
+            async: false,
+//            dataType: 'jsonp',  //请求数据类型
             success: function (data) {
-                console.log(data)
+                console.log("1=", data);
+                window.open(data,"_blank");
             }
         });
     }

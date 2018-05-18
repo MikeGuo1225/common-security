@@ -67,6 +67,7 @@
     <module>common-security-browser</module>
     <module>common-security-app</module>
     <module>common-security-demo</module>
+      <module>common-security-authorize</module>
   </modules>
 
 </project>
