@@ -71,10 +71,6 @@ common-security-authorize
   }
   ```
 
-  > PS：效果：
-  >
-  > ![1527843207535](C:\Users\Chen\AppData\Local\Temp\1527843207535.png)
-
 - 2、上面介绍了图形验证码，这里看下极验证：
 
   ​	2.1、首先去极验官网注册账号并创建项目，然后获取到id和key。
@@ -175,14 +171,6 @@ common-security-authorize
       });
   };
   ```
-
-  > PS：效果：
-  >
-  > ![1527844317026](C:\Users\Chen\AppData\Local\Temp\1527844317026.png)
-  >
-  > ![1527844323724](C:\Users\Chen\AppData\Local\Temp\1527844323724.png)
-
-  ​	
 
 - 3、校验全都封装好了，你只需要在配置文件里配置上需要验证码的url即可。Demo如下：
 

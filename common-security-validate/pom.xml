@@ -10,14 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common-security-validate</artifactId>
     <name>common-security-validate</name>
-    <version>${common.security.version}</version>
+    <version>${common.security.validate.version}</version>
 
     <dependencies>
 
         <dependency>
             <groupId>com.chentongwei</groupId>
             <artifactId>common-security-core</artifactId>
-            <version>${common.security.version}</version>
+            <version>${common.security.core.version}</version>
         </dependency>
 
         <dependency>

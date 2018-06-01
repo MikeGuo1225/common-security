@@ -10,7 +10,7 @@
     <name>common-security-core</name>
     <artifactId>common-security-core</artifactId>
     <packaging>jar</packaging>
-    <version>${common.security.version}</version>
+    <version>${common.security.core.version}</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
