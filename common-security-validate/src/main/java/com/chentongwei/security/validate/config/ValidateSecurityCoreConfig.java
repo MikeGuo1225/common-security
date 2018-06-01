@@ -82,7 +82,6 @@ public class ValidateSecurityCoreConfig extends WebSecurityConfigurerAdapter {
      */
     private String[] getPermitUrls() {
         List<String> urls = new LinkedList<>();
-        urls.add("/login.html");
         urls.add(ValidateCodeConstants.DEFAULT_UNAUTHENTICATION_URL);
         urls.add(DefaultLoginProcessingUrlEnum.MOBILE.url());
         return urls.toArray(new String[urls.size()]);

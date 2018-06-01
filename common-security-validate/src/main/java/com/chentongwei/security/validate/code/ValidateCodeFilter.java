@@ -133,6 +133,8 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
      */
     private void addUrlToMap(String url, ValidateCodeTypeEnum type) {
         if (StringUtils.isNotBlank(url)) {
+            // 去空白
+            url = url.replace(" ", "");
             String[] urls = StringUtils.splitByWholeSeparatorPreserveAllTokens(url, ",");
             for (String urlStr : urls) {
                 validateUrlMap.put(urlStr, type);
@@ -148,12 +150,10 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
      */
     private ValidateCodeTypeEnum getValidateCodeType(HttpServletRequest request) {
         ValidateCodeTypeEnum result = null;
-        if (! StringUtils.equalsIgnoreCase(request.getMethod(), "GET")) {
-            Set<String> urls = validateUrlMap.keySet();
-            for (String url : urls) {
-                if (pathMatcher.match(url, request.getRequestURI())) {
-                    result = validateUrlMap.get(url);
-                }
+        Set<String> urls = validateUrlMap.keySet();
+        for (String url : urls) {
+            if (pathMatcher.match(url, request.getRequestURI())) {
+                result = validateUrlMap.get(url);
             }
         }
         return result;
@@ -197,4 +197,5 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         }
         return true;
     }
+
 }

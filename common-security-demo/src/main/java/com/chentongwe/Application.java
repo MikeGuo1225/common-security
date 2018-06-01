@@ -30,9 +30,7 @@ import java.io.UnsupportedEncodingException;
 @SpringBootApplication
 @RestController
 public class Application extends WebMvcConfigurerAdapter{
-    /**
-     * @param args
-     */
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }

@@ -56,7 +56,7 @@
         <p id="wait">正在加载验证码......</p>
     </div>
 </div>
-<button id="popup-submit">测试登录极验证</button>
+<button id="popup-submit">测试登录</button>
 </body>
 <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
 <script src="https://static.geetest.com/static/tools/gt.js"></script>
@@ -70,6 +70,12 @@
         $.ajax({
             url: "code/image",
             type: "get",
+            /**
+             * 为什么要在headers里传个deviceId参数？
+             * 若你是前后端不分离（采取session共享数据），则无需传递此header里的参数。
+             * 若你是前后端分离（采取redis共享数据），则需要在header里传递deviceId参数，
+             * 若你是APP，则此参数建议取设备id，若你是web前后分离，则可以从后台获取一个然后放到缓存中，并放到此处。它标记着一个唯一的用户。
+             */
             headers: {
                 "deviceId": "123"
             },

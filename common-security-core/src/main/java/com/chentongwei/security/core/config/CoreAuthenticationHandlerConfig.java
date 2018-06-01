@@ -22,7 +22,7 @@ public class CoreAuthenticationHandlerConfig {
      * @return
      */
     @Bean
-    @ConditionalOnMissingBean(AuthenticationSuccessHandler.class)
+    @ConditionalOnMissingBean(name = "authenticationSuccessHandler")
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return new CoreAuthenticationSuccessHandler();
     }
@@ -33,7 +33,7 @@ public class CoreAuthenticationHandlerConfig {
      * @return
      */
     @Bean
-    @ConditionalOnMissingBean(AuthenticationFailureHandler.class)
+    @ConditionalOnMissingBean(name = "authenticationFailureHandler")
     public AuthenticationFailureHandler authenticationFailureHandler() {
         return new CoreAuthenticationFailureHandler();
     }
