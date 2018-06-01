@@ -1,39 +1,22 @@
 package com.chentongwei.security.core.properties;
 
-import com.chentongwei.security.core.properties.code.ValidateCodeProperties;
-import com.chentongwei.security.core.properties.oauth2.OAuth2Properties;
-import com.chentongwei.security.core.properties.social.SocialProperties;
+import com.chentongwei.security.core.properties.authentication.AuthenticationProperties;
+import com.chentongwei.security.core.properties.authorize.AuthorizeProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * 总的配置
+ * 总的Core模块Security配置类
  *
- * @author chentongwei@bshf360.com 2018-03-26 11:24
+ * @author chentongwei@bshf360.com 2018-05-25 11:52
  */
 @ConfigurationProperties(prefix = "com.chentongwei.security")
 public class SecurityProperties {
 
-    private BrowserProperties browser = new BrowserProperties();
-
+    /** 授权模块配置 */
     private AuthorizeProperties authorize = new AuthorizeProperties();
 
-    private ValidateCodeProperties code = new ValidateCodeProperties();
-
-    private SocialProperties social = new SocialProperties();
-
-    private SessionProperties session = new SessionProperties();
-
-    private LogoutProperties logout = new LogoutProperties();
-
-    private OAuth2Properties oauth2 = new OAuth2Properties();
-
-    public BrowserProperties getBrowser() {
-        return browser;
-    }
-
-    public void setBrowser(BrowserProperties browser) {
-        this.browser = browser;
-    }
+    /** 认证模块配置 */
+    private AuthenticationProperties authentication = new AuthenticationProperties();
 
     public AuthorizeProperties getAuthorize() {
         return authorize;
@@ -43,43 +26,11 @@ public class SecurityProperties {
         this.authorize = authorize;
     }
 
-    public ValidateCodeProperties getCode() {
-        return code;
+    public AuthenticationProperties getAuthentication() {
+        return authentication;
     }
 
-    public void setCode(ValidateCodeProperties code) {
-        this.code = code;
-    }
-
-    public SocialProperties getSocial() {
-        return social;
-    }
-
-    public void setSocial(SocialProperties social) {
-        this.social = social;
-    }
-
-    public SessionProperties getSession() {
-        return session;
-    }
-
-    public void setSession(SessionProperties session) {
-        this.session = session;
-    }
-
-    public LogoutProperties getLogout() {
-        return logout;
-    }
-
-    public void setLogout(LogoutProperties logout) {
-        this.logout = logout;
-    }
-
-    public OAuth2Properties getOauth2() {
-        return oauth2;
-    }
-
-    public void setOauth2(OAuth2Properties oauth2) {
-        this.oauth2 = oauth2;
+    public void setAuthentication(AuthenticationProperties authentication) {
+        this.authentication = authentication;
     }
 }

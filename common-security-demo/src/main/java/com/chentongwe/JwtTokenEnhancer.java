@@ -1,3 +1,4 @@
+/*
 package com.chentongwe;
 
 import com.chentongwe.security.MyUserDetailsService;
@@ -11,9 +12,11 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+*/
 /**
  * @author chentongwei@bshf360.com 2018-05-10 10:12
- */
+ *//*
+
 @Component("jwtTokenEnhancer")
 public class JwtTokenEnhancer implements TokenEnhancer {
 
@@ -32,3 +35,4 @@ public class JwtTokenEnhancer implements TokenEnhancer {
     }
 
 }
+*/

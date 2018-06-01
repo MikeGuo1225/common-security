@@ -1,12 +1,15 @@
+/*
 package com.chentongwe.web;
 
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.ConnectionSignUp;
 import org.springframework.stereotype.Component;
 
+*/
 /**
  * @author chentongwei@bshf360.com 2018-04-03 13:34
- */
+ *//*
+
 //@Component
 public class DemoConnectionSignUp implements ConnectionSignUp {
 
@@ -17,3 +20,4 @@ public class DemoConnectionSignUp implements ConnectionSignUp {
         return connection.getKey().getProviderUserId();
     }
 }
+*/

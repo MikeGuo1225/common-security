@@ -1,8 +1,8 @@
 package com.chentongwe;
 
-import com.alibaba.fastjson.JSON;
-import com.chentongwe.security.MyUserDetailsService;
-import com.chentongwei.security.core.properties.SecurityProperties;
+//import com.alibaba.fastjson.JSON;
+//import com.chentongwe.security.MyUserDetailsService;
+//import com.chentongwei.security.core.properties.SecurityProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.apache.commons.lang3.StringUtils;
@@ -36,8 +36,22 @@ public class Application extends WebMvcConfigurerAdapter{
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
+    @GetMapping("/hello")
+    public String hello() {
+        return "hello spring security";
+    }
 
-    @Autowired
+    @GetMapping("/hello2")
+    public String hello2() {
+        return "hello spring security2";
+    }
+
+    @GetMapping("/hello3")
+    public String hello3() {
+        return "hello spring security3";
+    }
+
+    /*@Autowired
     private SecurityProperties securityProperties;
 
     @GetMapping("/me")
@@ -71,7 +85,7 @@ public class Application extends WebMvcConfigurerAdapter{
         System.out.println("login进来了");
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return userDetails;
-    }
+    }*/
 
 
 }

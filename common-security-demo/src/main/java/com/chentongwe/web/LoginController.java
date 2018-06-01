@@ -1,3 +1,4 @@
+/*
 package com.chentongwe.web;
 
 import com.alibaba.fastjson.JSON;
@@ -14,9 +15,11 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 
+*/
 /**
  * @author chentongwei@bshf360.com 2018-03-26 14:57
- */
+ *//*
+
 @RestController
 @RequestMapping("/demo")
 public class LoginController {
@@ -56,4 +59,4 @@ public class LoginController {
         return userDetails;
     }
 
-}
+}*/

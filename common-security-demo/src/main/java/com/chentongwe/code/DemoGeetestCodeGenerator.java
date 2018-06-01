@@ -1,7 +1,7 @@
 package com.chentongwe.code;
 
-import com.chentongwei.security.core.validate.code.ValidateCode;
-import com.chentongwei.security.core.validate.code.ValidateCodeGenerator;
+//import com.chentongwei.security.core.validate.code.ValidateCode;
+//import com.chentongwei.security.core.validate.code.ValidateCodeGenerator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
 
@@ -11,10 +11,10 @@ import org.springframework.web.context.request.ServletWebRequest;
  * @Description:
  */
 //@Component("geetestValidateCodeGenerator")
-public class DemoGeetestCodeGenerator implements ValidateCodeGenerator {
-    @Override
-    public ValidateCode generate(ServletWebRequest request) {
-        System.out.println("自己的极验证逻辑");
-        return null;
-    }
-}
+//public class DemoGeetestCodeGenerator implements ValidateCodeGenerator {
+//    @Override
+//    public ValidateCode generate(ServletWebRequest request) {
+//        System.out.println("自己的极验证逻辑");
+//        return null;
+//    }
+//}

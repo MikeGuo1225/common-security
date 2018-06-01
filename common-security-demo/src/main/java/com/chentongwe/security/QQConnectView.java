@@ -1,3 +1,4 @@
+/*
 package com.chentongwe.security;
 
 import com.alibaba.fastjson.JSON;
@@ -10,18 +11,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
+*/
 /**
  * @author TongWei.Chen 2018-04-05 15:15:51
  * @Project common-security
  * @Description:
- */
+ *//*
+
 @Component("qqConnectView")
 public class QQConnectView extends AbstractView {
     @Override
     protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        /*
+        */
+/*
          * 解绑
-         */
+         *//*
+
         if (null == model.get("connections")) {
             System.out.println("解绑");
         } else { // 绑定
@@ -29,3 +34,4 @@ public class QQConnectView extends AbstractView {
         }
     }
 }
+*/

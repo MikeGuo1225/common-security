@@ -1,7 +1,7 @@
 package com.chentongwe.config;
 
-import com.chentongwe.security.QQConnectView;
-import com.chentongwei.security.app.jwt.JwtTokenValidateFilter;
+//import com.chentongwe.security.QQConnectView;
+//import com.chentongwei.security.app.jwt.JwtTokenValidateFilter;
 import org.apache.catalina.filters.CorsFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -19,28 +19,28 @@ import java.util.List;
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    @Bean({"connect/qqConnect", "connect/qqConnected"})
+   /* @Bean({"connect/qqConnect", "connect/qqConnected"})
     public View qqConnectedView() {
         return new QQConnectView();
-    }
+    }*/
 
     /**
      * 配置过滤器
      * @return
      */
-    @Bean
+   /* @Bean
     public FilterRegistrationBean someFilterRegistration() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(loginFilter());
-        registration.addUrlPatterns("/*");
+        registration.addUrlPatterns("*//*");
         registration.setOrder(-10);
         return registration;
-    }
+    }*/
 
-    @Bean
-    public Filter loginFilter() {
-        return new JwtTokenValidateFilter();
-    }
+//    @Bean
+//    public Filter loginFilter() {
+//        return new JwtTokenValidateFilter();
+//    }
 
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
