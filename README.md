@@ -426,7 +426,7 @@ com.chentongwei.security.authentication.loginSuccessPage=http://www.tucaole.cn
 > ```java
 > @Autowired
 > private AuthorizeConfigManager authorizeConfigManager;
-> 
+>
 > // 一定要放到最后，是因为config方法里最后做了其他任何方法都需要身份认证才能访问。
 > // 放到前面的话，后面在加载.antMatchers(getPermitUrls()).permitAll()的时候也会被认为无权限，
 > // 因为前面已经做了其他任何方法都需要身份认证才能访问，SpringSecurity是有先后顺序的。
@@ -435,16 +435,40 @@ com.chentongwei.security.authentication.loginSuccessPage=http://www.tucaole.cn
 >
 > 若我不想自定义配置类，我想在你这配置类里追加几个`ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry`类里的方法能行吗？
 >
-> 能行，在你项目中写个类实现`com.chentongwei.security.core.authorize.AuthorizeConfigProvider`即可，其他什么都不用管。会自动生效！！！
+> 能行，在你项目中写个类实现`com.chentongwei.security.core.authorize.AuthorizeConfigProvider`即可，并且**指定@Order(Integer.MAX_VALUE - 100)**，其他什么都不用管。会自动生效！！！
 >
 > 比如
 >
 > ```java
 > @Component
+> @Order(Integer.MAX_VALUE - 100)
 > public class DemoAuthorizeConfigProvider implements AuthorizeConfigProvider {
 >     @Override
 >     public void config(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config) {
->         config.antMatchers("/login.html").permitAll();
+>         config.antMatchers("/hello2").hasRole("admin");
 >     }
 > }
 > ```
+>
+> 还有一个需要注意的地方，就是再比如：如果我们既要自定义`config.antMatchers`又要自定义`config.anyRequest()`，这时候不能写到一个类（比如上面的`DemoAuthorizeConfigProvider`）里面，这时候要写两个类，一个是上面的那个类，还需要单独写一个类里面单独去定义`config.anyRequest()`，并且指定`@Order(Integer.MAX_VALUE)`，比如：
+>
+> ```java
+> @Component
+> @Order(Integer.MAX_VALUE)
+> public class DemoAnyRequestAuthorizeConfigProvider implements AuthorizeConfigProvider {
+>     @Override
+>     public void config(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config) {
+>         config.anyRequest().access("@rbacService.hasPermission(request,authentication)");
+>     }
+> }
+> ```
+>
+> 总结注意如下四点：
+>
+> 1、实现AuthorizeConfigProvider接口。
+>
+> 2、若要配置非`config.anyRequest`（比如：`config.antMatchers`）的时候，需要指定`@Order(Integer.MAX_VALUE - 100)`；而配置`config.anyRequest`的时候，需要指定`@Order(Integer.MAX_VALUE)`。
+>
+> 3、自定义`config.anyRequest`和非`config.anyRequest`需要写两个不同的类，并指定不同的@Order。
+>
+> 4、除了内置的几个接口（如：验证码、登录等）不需要认证身份即可访问，其他的接口都是需要身份认证才可访问（`config.anyRequest().authenticated();`）。

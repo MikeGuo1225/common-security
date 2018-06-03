@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>common-security-authorize</artifactId>
-
+    <version>${common.security.version}</version>
     <name>common-security-authorize</name>
 
     <properties>

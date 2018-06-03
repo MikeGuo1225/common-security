@@ -1,19 +1,19 @@
-package com.chentongwe.security;
+package com.chentongwei.security.core.authorize;
 
-import com.chentongwei.security.core.authorize.AuthorizeConfigProvider;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.stereotype.Component;
 
 /**
- * @author chentongwei@bshf360.com 2018-06-01 18:49
+ * @author TongWei.Chen 2018-06-03 12:36:07
  */
 @Component
-@Order(Integer.MAX_VALUE - 100)
-public class DemoAuthorizeConfigProvider implements AuthorizeConfigProvider {
+@Order(Integer.MAX_VALUE - 10)
+public class AnyRequestAuthenticationAuthorizeConfigProvider implements AuthorizeConfigProvider {
+
     @Override
     public void config(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config) {
-        config.antMatchers("/hello2").hasRole("admin");
+        config.anyRequest().authenticated();
     }
 }

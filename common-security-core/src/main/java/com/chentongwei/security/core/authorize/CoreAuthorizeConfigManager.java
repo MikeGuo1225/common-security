@@ -21,7 +21,5 @@ public class CoreAuthorizeConfigManager implements AuthorizeConfigManager {
         for (AuthorizeConfigProvider provider : authorizeConfigProviders) {
             provider.config(config);
         }
-        // TODO
-        config.anyRequest().authenticated();
     }
 }

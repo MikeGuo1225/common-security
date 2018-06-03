@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
  * @author chentongwei@bshf360.com 2018-06-01 18:49
  */
 @Component
-@Order(Integer.MAX_VALUE - 100)
-public class DemoAuthorizeConfigProvider implements AuthorizeConfigProvider {
+@Order(Integer.MAX_VALUE)
+public class DemoAnyRequestAuthorizeConfigProvider implements AuthorizeConfigProvider {
     @Override
     public void config(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config) {
-        config.antMatchers("/hello2").hasRole("admin");
+        config.anyRequest().access("@rbacService.hasPermission(request,authentication)");
     }
 }
