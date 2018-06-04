@@ -9,7 +9,7 @@
 
     <artifactId>common-security-browser</artifactId>
     <packaging>jar</packaging>
-    <version>${common.security.version}</version>
+    <version>${common.security.browser.version}</version>
     <name>common-security-browser</name>
     <url>http://maven.apache.org</url>
 
@@ -20,8 +20,8 @@
     <dependencies>
         <dependency>
             <groupId>com.chentongwei</groupId>
-            <artifactId>common-security-core</artifactId>
-            <version>${common.security.core.version}</version>
+            <artifactId>common-security-validate</artifactId>
+            <version>${common.security.validate.version}</version>
         </dependency>
     </dependencies>
 </project>

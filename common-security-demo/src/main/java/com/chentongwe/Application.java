@@ -49,6 +49,11 @@ public class Application extends WebMvcConfigurerAdapter{
         return "hello spring security3";
     }
 
+    @GetMapping("/hello4")
+    public String hello4() {
+        return "hello spring security4";
+    }
+
     /*@Autowired
     private SecurityProperties securityProperties;
 

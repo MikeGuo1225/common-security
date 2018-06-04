@@ -5,7 +5,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,8 +18,8 @@ public class CoreAuthorizeConfigProvider implements AuthorizeConfigProvider {
     private SecurityProperties securityProperties;
 
     @Override
-    public void config(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config) {
-        config.antMatchers(
+    public void config(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.authorizeRequests().antMatchers(
                 // 读取配置文件，放开自定义路径的权限。
                 getPermitUrls()
         ).permitAll();

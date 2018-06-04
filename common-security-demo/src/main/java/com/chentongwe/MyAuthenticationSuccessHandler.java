@@ -13,7 +13,7 @@ import java.io.IOException;
 /**
  * @author chentongwei@bshf360.com 2018-06-01 18:28
  */
-@Component("authenticationSuccessHandler")
+//@Component("authenticationSuccessHandler")
 public class MyAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     @Override

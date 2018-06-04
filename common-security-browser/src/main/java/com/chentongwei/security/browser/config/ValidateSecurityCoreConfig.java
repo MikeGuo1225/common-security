@@ -1,11 +1,11 @@
-package com.chentongwei.security.validate.config;
+package com.chentongwei.security.browser.config;
 
 import com.chentongwei.security.core.authorize.AuthorizeConfigManager;
 import com.chentongwei.security.validate.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
+import com.chentongwei.security.validate.config.ValidateCodeSecurityConfig;
 import com.chentongwei.security.validate.constants.ValidateCodeConstants;
 import com.chentongwei.security.validate.enums.DefaultLoginProcessingUrlEnum;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,7 +20,6 @@ import java.util.List;
  *
  * @author chentongwei@bshf360.com 2018-05-30 14:31
  */
-@ConditionalOnProperty(prefix = "com.chentongwei.security.core.config", value = "enable", matchIfMissing = true)
 @Configuration
 public class ValidateSecurityCoreConfig extends WebSecurityConfigurerAdapter {
     /**
@@ -60,6 +59,7 @@ public class ValidateSecurityCoreConfig extends WebSecurityConfigurerAdapter {
             .and()
             .apply(smsCodeAuthenticationSecurityConfig)
             .and()
+            .logout().and()
             // 权限设置
             .authorizeRequests()
             // 任何请求都必须经过身份认证，排除如下
@@ -73,7 +73,7 @@ public class ValidateSecurityCoreConfig extends WebSecurityConfigurerAdapter {
         // 一定要放到最后，是因为config方法里最后做了其他任何方法都需要身份认证才能访问。
         // 放到前面的话，后面在加载.antMatchers(getPermitUrls()).permitAll()的时候也会被认为无权限，
         // 因为前面已经做了其他任何方法都需要身份认证才能访问，SpringSecurity是有先后顺序的。
-        authorizeConfigManager.config(http);
+//        authorizeConfigManager.config(http);
     }
 
     /**

@@ -2,7 +2,6 @@ package com.chentongwei.security.core.authorize;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,9 +16,9 @@ public class CoreAuthorizeConfigManager implements AuthorizeConfigManager {
     private List<AuthorizeConfigProvider> authorizeConfigProviders;
 
     @Override
-    public void config(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config) {
+    public void config(HttpSecurity httpSecurity) throws Exception {
         for (AuthorizeConfigProvider provider : authorizeConfigProviders) {
-            provider.config(config);
+            provider.config(httpSecurity);
         }
     }
 }

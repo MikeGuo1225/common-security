@@ -2,7 +2,6 @@ package com.chentongwei.security.core.authorize;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,8 +11,8 @@ import org.springframework.stereotype.Component;
 @Order(Integer.MAX_VALUE - 10)
 public class AnyRequestAuthenticationAuthorizeConfigProvider implements AuthorizeConfigProvider {
 
-    @Override
-    public void config(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config) {
-        config.anyRequest().authenticated();
-    }
+   @Override
+   public void config(HttpSecurity httpSecurity) throws Exception {
+       httpSecurity.authorizeRequests().anyRequest().authenticated();
+   }
 }

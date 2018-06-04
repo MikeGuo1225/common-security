@@ -4,7 +4,6 @@ import com.chentongwei.security.core.authorize.AuthorizeConfigProvider;
 import com.chentongwei.security.validate.constants.ValidateCodeConstants;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,8 +17,8 @@ import org.springframework.stereotype.Component;
 public class ValidateAuthorizeConfigProvider implements AuthorizeConfigProvider {
 
     @Override
-    public void config(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config) {
-        config.antMatchers(
+    public void config(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.authorizeRequests().antMatchers(
                 ValidateCodeConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*"
         ).permitAll();
     }
