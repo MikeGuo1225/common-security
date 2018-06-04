@@ -19,8 +19,8 @@
     <dependencies>
         <dependency>
             <groupId>com.chentongwei</groupId>
-            <artifactId>common-security-validate</artifactId>
-            <version>${common.security.validate.version}</version>
+            <artifactId>common-security-browser</artifactId>
+            <version>${common.security.browser.version}</version>
         </dependency>
         <dependency>
             <groupId>com.chentongwei</groupId>
