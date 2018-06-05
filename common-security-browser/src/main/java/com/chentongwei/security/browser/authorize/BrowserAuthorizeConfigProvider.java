@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 /**
  * 浏览器（前后不分离）的一些核心配置
@@ -22,6 +23,11 @@ import javax.sql.DataSource;
 @Component
 @Order(Integer.MIN_VALUE + 2)
 public class BrowserAuthorizeConfigProvider implements AuthorizeConfigProvider {
+
+    /**
+     * 允许iframe
+     */
+    private static final int FRAME_DISABLE_ALLOW_STATUS = 1;
 
     @Autowired
     private SecurityProperties securityProperties;
@@ -52,8 +58,11 @@ public class BrowserAuthorizeConfigProvider implements AuthorizeConfigProvider {
                 .rememberMe()
                     .tokenRepository(persistentTokenRepository())
                     .tokenValiditySeconds(securityProperties.getRememberme().getSeconds())
-                    .userDetailsService(userDetailsService)
-        ;
+                    .userDetailsService(userDetailsService);
+        // 若是0，则放开frame权限
+        if (Objects.equals(FRAME_DISABLE_ALLOW_STATUS, securityProperties.getFrame().getDisableStatus())) {
+            httpSecurity.headers().frameOptions().disable();
+        }
     }
 
     @Bean
