@@ -4,9 +4,15 @@ import com.chentongwei.security.browser.logout.BrowserLogoutSuccessHandler;
 import com.chentongwei.security.browser.properties.SecurityProperties;
 import com.chentongwei.security.core.authorize.AuthorizeConfigProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Component;
+
+import javax.sql.DataSource;
 
 /**
  * 浏览器（前后不分离）的一些核心配置
@@ -20,15 +26,40 @@ public class BrowserAuthorizeConfigProvider implements AuthorizeConfigProvider {
     @Autowired
     private SecurityProperties securityProperties;
 
+    /**
+     * 记住我
+     */
+    // 记住我数据源（使用者配置的）
+    @Autowired
+    private DataSource dataSource;
+    // 记住我自动登录需要用到
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Override
     public void config(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests()
                     .antMatchers(securityProperties.getLogout().getLogoutUrl()).permitAll()
                 .and()
+                // 退出登录
                 .logout()
                     .logoutUrl(securityProperties.getLogout().getLogoutUrl())
                     .deleteCookies("JSESSIONID")
-                    .logoutSuccessHandler(new BrowserLogoutSuccessHandler(securityProperties.getLogout().getLogoutSuccessUrl()));
+                    .logoutSuccessHandler(new BrowserLogoutSuccessHandler(securityProperties.getLogout().getLogoutSuccessUrl()))
+                .and()
+                // 记住我
+                .rememberMe()
+                    .tokenRepository(persistentTokenRepository())
+                    .tokenValiditySeconds(securityProperties.getRememberme().getSeconds())
+                    .userDetailsService(userDetailsService)
+        ;
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return tokenRepository;
     }
 }
