@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -42,12 +44,17 @@ public class BrowserAuthorizeConfigProvider implements AuthorizeConfigProvider {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    /**
+     * session
+     */
+    @Autowired
+    private InvalidSessionStrategy invalidSessionStrategy;
+    @Autowired
+    private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
+
     @Override
     public void config(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .authorizeRequests()
-                    .antMatchers(securityProperties.getLogout().getLogoutUrl()).permitAll()
-                .and()
                 // 退出登录
                 .logout()
                     .logoutUrl(securityProperties.getLogout().getLogoutUrl())
@@ -58,7 +65,21 @@ public class BrowserAuthorizeConfigProvider implements AuthorizeConfigProvider {
                 .rememberMe()
                     .tokenRepository(persistentTokenRepository())
                     .tokenValiditySeconds(securityProperties.getRememberme().getSeconds())
-                    .userDetailsService(userDetailsService);
+                    .userDetailsService(userDetailsService)
+                .and()
+                .sessionManagement()
+                    // session失效处理器
+                    .invalidSessionStrategy(invalidSessionStrategy)
+                    // session最大并发数
+                    .maximumSessions(securityProperties.getSession().getMaximumSessions())
+                    // 被踢后的处理
+                    .expiredSessionStrategy(sessionInformationExpiredStrategy)
+                .and()
+                .and()
+                .authorizeRequests()
+                    .antMatchers(securityProperties.getLogout().getLogoutUrl()).permitAll()
+                .and()
+        ;
         // 若是0，则放开frame权限
         if (Objects.equals(FRAME_DISABLE_ALLOW_STATUS, securityProperties.getFrame().getDisableStatus())) {
             httpSecurity.headers().frameOptions().disable();
