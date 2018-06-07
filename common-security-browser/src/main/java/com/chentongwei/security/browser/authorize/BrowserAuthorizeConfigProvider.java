@@ -77,13 +77,19 @@ public class BrowserAuthorizeConfigProvider implements AuthorizeConfigProvider {
                 .and()
                 .and()
                 .authorizeRequests()
-                    .antMatchers(securityProperties.getLogout().getLogoutUrl()).permitAll()
+                    .antMatchers(
+                            getPermitAllUrl()
+                    ).permitAll()
                 .and()
         ;
         // 若是0，则放开frame权限
         if (Objects.equals(FRAME_DISABLE_ALLOW_STATUS, securityProperties.getFrame().getDisableStatus())) {
             httpSecurity.headers().frameOptions().disable();
         }
+    }
+
+    private String[] getPermitAllUrl() {
+        return new String[] {securityProperties.getLogout().getLogoutUrl(), "/*.html", "/favicon.ico", "/**/*.css", "/**/*.js"};
     }
 
     @Bean
