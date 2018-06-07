@@ -12,7 +12,7 @@ common-security-authorize
 
 ****
 
-## common-security-validate
+## 一、common-security-validate
 
 ## 1、是什么？
 
@@ -25,7 +25,7 @@ common-security-authorize
 
 `@ComponentScan(basePackages = {"com.chentongwei.security", "你自己的包名"})`
 
-## 3、有什么用？
+## 3、具体用法？
 
 **场景：**
 
@@ -472,3 +472,117 @@ com.chentongwei.security.authentication.loginSuccessPage=http://www.tucaole.cn
 > 3、自定义`httpSecurity.authorizeRequests().anyRequest`和非`httpSecurity.authorizeRequests().anyRequest`需要写两个不同的类，并指定不同的@Order。
 >
 > 4、除了内置的几个接口（如：验证码、登录等）不需要认证身份即可访问，其他的接口都是需要身份认证才可访问（`httpSecurity.authorizeRequests().anyRequest().authenticated();`）。
+
+
+
+****
+
+## 二、common-security-browser
+
+## 1、是什么？
+
+**基于`common-security-validate`，并在它基础上增加了登出操作、记住我、session管理以及是否允许iframe操作；适用于前后端不分离（session存储数据）。**
+
+## 2、怎么用？
+
+- **1、后续所说的所有的配置项都配置到`security.properties`文件中。**
+- **2、导入jar包后，在你自己SpringBoot项目启动类上添加如下注解**
+
+`@ComponentScan(basePackages = {"com.chentongwei.security", "你自己的包名"})`
+
+## 3、具体用法？
+
+> PS：上面的`common-security-validate`里的所有配置全都可以使用。并在原基础上增加了如下三部分。
+
+- **3.1、登出**
+
+  ```properties
+  # 退出登录接口，缺省值为/logout
+  com.chentongwei.security.logout.logoutUrl=/logout2
+  # 缺省值：/default-login.html,是跳转到URL还是返回JSON，只要这里配置了URL（并且不为缺省值），那就是跳转到URL
+  com.chentongwei.security.logout.logoutSuccessUrl=/login.html
+  ```
+
+  > PS：默认登出接口为/logout，这个可自定义，而且不管定义成什么，直接配置文件里写一下就行了，无需真的写一个logout控制器接口，内部原理会先将记住我的表里的当前用户删除掉，并清除JSESSIONID。
+  >
+  > 
+  >
+  > 登出后默认是返回如下JSON数据，若配置了`logoutSuccessUrl`的话，则登出成功后跳转到`logoutSuccessUrl`对应的value值。
+  >
+  > ```json
+  > {"code":200,"msg":"退出成功"}
+  > ```
+  >
+  > 
+  >
+  > 示例：
+  >
+  > ```html
+  > <!-- 注意此处的/logout2就是上面配置文件所配置的logoutUrl，默认为/logout -->
+  > <a href="/logout2">退出</a>
+  > ```
+
+- **3.2、记住我**
+
+  > PS：前提：需要建立一张用于记住我的表，这个表是SpringSecurity的记住我功能必须要建立的。建表语句如下：
+  >
+  > ```sql
+  > CREATE TABLE persistent_logins (
+  >     username VARCHAR (64) NOT NULL,
+  >     series VARCHAR (64) PRIMARY KEY,
+  >     token VARCHAR (64) NOT NULL,
+  >     last_used TIMESTAMP NOT NULL
+  > )
+  > ```
+
+  *记住我配置项：*
+
+  ```properties
+  # 记住我时长（缺省值3600s）
+  # 注意：需要提前建表
+  com.chentongwei.security.rememberme.seconds=7200
+  ```
+
+  > PS：记住我功能简述：
+  >
+  > 一般前后不分离的项目我们都会将用户信息存到session，意味着服务器重启的时候就需要每个用户都重新登录才可以，而记住我就是做了持久化，记住我后，会将`username`，`token`等信息放到刚才那张表中，然后首次登陆会根据`token`去表里查询是否存在对应的信息，以及是否超时等，若符合要求则直接登陆。第一次验证成功后会存到`cookie`中，所以并不是每次都查询表，这样一来也不会产生性能问题。
+  >
+  > 
+  >
+  > 若你用了记住我功能，则复选框的`name`必须是`remember-me` 。
+  >
+  > 示例：
+  >
+  >  `<input name="remember-me" type="checkbox" value="true" />记住我`
+
+- **3.3、session管理**
+
+  ```properties
+  # session失效/被踢掉时跳转的地址，默认不配置，不配置则代表返回JSON格式
+  com.chentongwei.security.session.sessionInvalidUrl=/login.html
+  # 同一个用户在系统中最大的session数，默认1
+  com.chentongwei.security.session.maximumSessions=1
+  ```
+
+  > PS：
+  >
+  > 1、默认session失效后返回如下JSON数据，若配置了`sessionInvalidUrl`则session失效后会跳转到对应的value。
+  >
+  > ```json
+  > {"code":601,"msg":"session已失效"}
+  > ```
+  >
+  > 2、默认一个用户在系统中最大的登录数为1，当有多个登录数时，会把上一个登录的人给踢掉，踢掉后默认返回如下JSON数据，配置了`sessionInvalidUrl`则session失效后会跳转到对应的value。若想一个账号在系统中最大登录数为多个，则只需修改`maximumSessions`即可。
+  >
+  > ```json
+  > {"code":601,"msg":"session已失效可能是您的账号在别处登录导致的"}
+  > ```
+
+- **3.4、其他配置**
+
+  ```properties
+  # 1：放开frame的拦截权限。缺省值；0：不允许frame嵌套
+  com.chentongwei.security.frame.disableStatus=1
+  ```
+
+  > PS：默认不允许iframe嵌套，防止csrf攻击。若有需要，则可以配置`disableStatus=1`即可。
