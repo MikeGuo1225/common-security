@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author chentongwei@bshf360.com 2018-03-26 14:02
  */
-//@Component("ctwAuthenticationFailureHandler")
+//@Component("authenticationSuccessHandler")
 public class ValidateCodeAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     private Logger logger = LoggerFactory.getLogger(getClass());

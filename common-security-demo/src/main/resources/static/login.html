@@ -60,10 +60,25 @@
 
 <button onclick="hello4()">测试jwt授权</button>
 
+<button onclick="logout()">jwt退出</button>
+
 </body>
 <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
 <script src="https://static.geetest.com/static/tools/gt.js"></script>
 <script>
+
+    function logout() {
+        $.ajax({
+            url: "/jwtLogout",
+            type: "get",
+            headers: {
+                "Authorization" : "Bearer eyJhbGciOiJIUzUxMiJ9.eyJyYW5kb21LZXkiOiJhNmtjZmIiLCJzdWIiOiJhZG1pbiIsImV4cCI6MTUyODU1NDg3MywiaWF0IjoxNTI4NTUzNjczfQ.eUmjDRi3vLWNAOTe07Udcqbjl-hIHxueid7TlXa-wLGdaRL0KztHeV9U9XhmoS5szy5i7693e939TEGmk5AP0g"
+            },
+            success: function (data) {
+                console.info(data)
+            }
+        });
+    }
 
 
     function hello4() {

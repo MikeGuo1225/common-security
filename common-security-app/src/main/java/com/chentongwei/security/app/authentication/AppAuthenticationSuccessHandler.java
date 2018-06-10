@@ -1,53 +1,85 @@
 package com.chentongwei.security.app.authentication;
 
 import com.alibaba.fastjson.JSON;
+import com.chentongwei.security.app.enums.JwtRedisEnum;
 import com.chentongwei.security.app.jwt.util.JwtTokenUtil;
+import com.chentongwei.security.app.properties.SecurityProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
- * 为什么不实现接口，而是继承SavedRequestAwareAuthenticationSuccessHandler类的方式？
- * 因为SavedRequestAwareAuthenticationSuccessHandler这个类记住了你上一次的请求路径，比如：
- * 你请求user.html。然后被拦截到了登录页，这时候你输入完用户名密码点击登录，会自动跳转到user.html，而不是主页面。
- *
- * 若是前后分离项目则实现接口即可，因为我弄的是通用的权限组件，所以选择了继承
+ * 认证成功后处理器
  *
  * @author chentongwei@bshf360.com 2018-03-26 14:09
  */
-@Component("authenticationSuccessHandler")
 public class AppAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
+    private StringRedisTemplate redisTemplate;
+    @Autowired
     private JwtTokenUtil jwtTokenUtil;
+    @Autowired
+    private SecurityProperties securityProperties;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         final String randomKey = jwtTokenUtil.getRandomKey();
-        logger.info("username：【{}】", ((UserDetails)authentication.getPrincipal()).getUsername());
-        final String token = jwtTokenUtil.generateToken(((UserDetails)authentication.getPrincipal()).getUsername(), randomKey);
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        logger.info("username：【{}】", username);
+        final String token = jwtTokenUtil.generateToken(username, randomKey);
 
         logger.info("登录成功！");
 
-        Map<String, Object> resultMap = new HashMap();
         response.setHeader("Authorization", "Bearer " + token);
         response.setHeader("randomKey", randomKey);
-        resultMap.put("authentication", authentication);
 
+        // 判断是否开启允许多人同账号同时在线，若不允许的话则先删除之前的
+        if (securityProperties.getJwt().isPreventsLogin()) {
+            // T掉同账号已登录的用户
+            batchDel(username);
+        }
+
+        // 存到redis
+        redisTemplate.opsForValue().set(JwtRedisEnum.getKey(username, randomKey),
+                token,
+                securityProperties.getJwt().getExpiration(),
+                TimeUnit.SECONDS);
+
+        Map<String, Object> resultMap = new HashMap();
+        resultMap.put("authentication", authentication);
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(JSON.toJSONString(resultMap));
 
+    }
+
+    /**
+     * 批量删除redis的key
+     *
+     * @param username：username
+     */
+    private void batchDel(String username){
+        Set<String> set = redisTemplate.keys(JwtRedisEnum.getKey(username, "*"));
+        Iterator<String> it = set.iterator();
+        while(it.hasNext()){
+            String keyStr = it.next();
+            logger.info("keyStr【{}】", keyStr);
+            redisTemplate.delete(keyStr);
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.chentongwei.security.app.jwt.util;
 import com.chentongwei.security.app.jwt.JWTUserDetails;
 import com.chentongwei.security.app.properties.SecurityProperties;
 import io.jsonwebtoken.*;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,6 +11,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.*;
 
 /**
@@ -56,6 +59,12 @@ public class JwtTokenUtil {
         return authorities;
     }
 
+    /**
+     * 获取用户id从token中
+     *
+     * @param token
+     * @return
+     */
     public long getUserIdFromToken(String token) {
         long userId;
         try {
@@ -114,7 +123,7 @@ public class JwtTokenUtil {
      */
     public Claims getClaimFromToken(String token) {
         return Jwts.parser()
-                .setSigningKey(securityProperties.getJwt().getSecret())
+                .setSigningKey(generalKey())
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -123,7 +132,7 @@ public class JwtTokenUtil {
      * 解析token是否正确,不正确会报异常<br>
      */
     public void parseToken(String token) throws JwtException {
-        Jwts.parser().setSigningKey(securityProperties.getJwt().getSecret()).parseClaimsJws(token).getBody();
+        Jwts.parser().setSigningKey(generalKey()).parseClaimsJws(token).getBody();
     }
 
     /**
@@ -151,6 +160,16 @@ public class JwtTokenUtil {
     }
 
     /**
+     * 由字符串生成加密key
+     * @return
+     */
+    public SecretKey generalKey(){
+        byte[] encodedKey = Base64.decodeBase64(securityProperties.getJwt().getSecret());
+        SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
+        return key;
+    }
+
+    /**
      * 生成token
      */
     private String doGenerateToken(Map<String, Object> claims, String subject) {
@@ -162,7 +181,7 @@ public class JwtTokenUtil {
                 .setSubject(subject)
                 .setIssuedAt(createdDate)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512, securityProperties.getJwt().getSecret())
+                .signWith(SignatureAlgorithm.HS512, generalKey())
                 .compact();
     }
 
@@ -187,14 +206,16 @@ public class JwtTokenUtil {
         return sb.toString();
     }
 
+    /**
+     * 验证token是否合法
+     *
+     * @param token：token
+     * @param userDetails：用户信息
+     * @return
+     */
     public Boolean validateToken(String token, UserDetails userDetails) {
-        JWTUserDetails user = (JWTUserDetails) userDetails;
-        final long userId = getUserIdFromToken(token);
         final String username = getUsernameFromToken(token);
-        return (userId == user.getUserId()
-                && username.equals(user.getUsername())
-                && !isTokenExpired(token)
-        );
+        return (username.equals(userDetails.getUsername()) && ! isTokenExpired(token));
     }
 
     /**
@@ -203,19 +224,15 @@ public class JwtTokenUtil {
      * @param token：token
      * @return
      */
-    public String refreshToken(String token) {
+    public String refreshToken(String token, String randomKey) {
         String refreshedToken;
         try {
             final Claims claims = getClaimFromToken(token);
-            refreshedToken = generateAccessToken(claims.getSubject());
+            refreshedToken = generateToken(claims.getSubject(), randomKey);
         } catch (Exception e1) {
             refreshedToken = null;
         }
         return refreshedToken;
-    }
-
-    private String generateAccessToken(String subject) {
-        return generateToken(subject, getRandomKey());
     }
 
 }

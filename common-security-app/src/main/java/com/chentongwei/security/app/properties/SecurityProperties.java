@@ -1,7 +1,6 @@
 package com.chentongwei.security.app.properties;
 
-import com.chentongwei.security.app.properties.oauth2.JwtProperties;
-import com.chentongwei.security.app.properties.oauth2.Oauth2Properties;
+import com.chentongwei.security.app.properties.jwt.JwtProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -11,9 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties(prefix = "com.chentongwei.security")
 public class SecurityProperties {
-
-    /** oauth2的基本配置 */
-//    private Oauth2Properties oauth2 = new Oauth2Properties();
 
     private JwtProperties jwt = new JwtProperties();
 
@@ -25,11 +21,4 @@ public class SecurityProperties {
         this.jwt = jwt;
     }
 
-    //    public Oauth2Properties getOauth2() {
-//        return oauth2;
-//    }
-
-//    public void setOauth2(Oauth2Properties oauth2) {
-//        this.oauth2 = oauth2;
-//    }
 }

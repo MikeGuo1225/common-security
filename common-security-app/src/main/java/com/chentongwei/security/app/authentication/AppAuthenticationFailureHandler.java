@@ -1,15 +1,12 @@
 package com.chentongwei.security.app.authentication;
 
 import com.alibaba.fastjson.JSON;
-import com.chentongwei.security.core.properties.SecurityProperties;
 import com.chentongwei.security.core.response.ResponseEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,13 +18,9 @@ import java.io.IOException;
  *
  * @author chentongwei@bshf360.com 2018-03-26 14:02
  */
-@Component("authenticationFailureHandler")
 public class AppAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Autowired
-    private SecurityProperties securityProperties;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {

@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * @author chentongwei@bshf360.com 2018-03-26 13:15
@@ -23,10 +25,14 @@ public class MyUserDetailsService implements UserDetailsService/*, SocialUserDet
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private HttpServletRequest request;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         logger.info("表单登录用户名：" + username);
+        Object tokenKey = request.getAttribute("tokenKey");
         return buildUser(username);
     }
 
