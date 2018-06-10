@@ -1,19 +1,20 @@
 package com.chentongwei.security.app.jwt.util;
 
-import com.chentongwei.security.app.jwt.JWTUserDetails;
 import com.chentongwei.security.app.properties.SecurityProperties;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Jwt Util
@@ -23,58 +24,8 @@ import java.util.*;
 @Component
 public class JwtTokenUtil {
 
-    private static final String CLAIM_KEY_AUTHORITIES = "scope";
-
     @Autowired
     private SecurityProperties securityProperties;
-
-    public UserDetails getUserFromToken(String token) {
-        JWTUserDetails user;
-        try {
-            final Claims claims = getClaimFromToken(token);
-            long userId = getUserIdFromToken(token);
-            String username = claims.getSubject();
-            List roles = (List) claims.get(CLAIM_KEY_AUTHORITIES);
-            Collection<? extends GrantedAuthority> authorities = parseArrayToAuthorities(roles);
-//            boolean account_enabled = (Boolean) claims.get(CLAIM_KEY_ACCOUNT_ENABLED);
-//            boolean account_non_locked = (Boolean) claims.get(CLAIM_KEY_ACCOUNT_NON_LOCKED);
-//            boolean account_non_expired = (Boolean) claims.get(CLAIM_KEY_ACCOUNT_NON_EXPIRED);
-
-            user = new JWTUserDetails(userId, username, "password", true, true, true, true, authorities);
-        } catch (Exception e) {
-            user = null;
-        }
-        return user;
-    }
-
-    private Collection<? extends GrantedAuthority> parseArrayToAuthorities(List roles) {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        SimpleGrantedAuthority authority;
-        if (CollectionUtils.isNotEmpty(roles)) {
-            for (Object role : roles) {
-                authority = new SimpleGrantedAuthority(role.toString());
-                authorities.add(authority);
-            }
-        }
-        return authorities;
-    }
-
-    /**
-     * 获取用户id从token中
-     *
-     * @param token
-     * @return
-     */
-    public long getUserIdFromToken(String token) {
-        long userId;
-        try {
-            final Claims claims = getClaimFromToken(token);
-            userId = (Long) claims.get("user_id");
-        } catch (Exception e) {
-            userId = 0;
-        }
-        return userId;
-    }
 
     /**
      * 获取用户名从token中
@@ -84,24 +35,10 @@ public class JwtTokenUtil {
     }
 
     /**
-     * 获取jwt发布时间
-     */
-    public Date getIssuedAtDateFromToken(String token) {
-        return getClaimFromToken(token).getIssuedAt();
-    }
-
-    /**
      * 获取jwt失效时间
      */
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token).getExpiration();
-    }
-
-    /**
-     * 获取jwt接收者
-     */
-    public String getAudienceFromToken(String token) {
-        return getClaimFromToken(token).getAudience();
     }
 
     /**
@@ -126,13 +63,6 @@ public class JwtTokenUtil {
                 .setSigningKey(generalKey())
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    /**
-     * 解析token是否正确,不正确会报异常<br>
-     */
-    public void parseToken(String token) throws JwtException {
-        Jwts.parser().setSigningKey(generalKey()).parseClaimsJws(token).getBody();
     }
 
     /**
@@ -204,18 +134,6 @@ public class JwtTokenUtil {
             sb.append(base.charAt(number));
         }
         return sb.toString();
-    }
-
-    /**
-     * 验证token是否合法
-     *
-     * @param token：token
-     * @param userDetails：用户信息
-     * @return
-     */
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && ! isTokenExpired(token));
     }
 
     /**
