@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class LogoutController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private StringRedisTemplate redisTemplate;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
@@ -42,9 +43,11 @@ public class LogoutController {
         String authToken = authHeader.substring("Bearer ".length());
         String randomKey = jwtTokenUtil.getMd5KeyFromToken(authToken);
         String username = jwtTokenUtil.getUsernameFromToken(authToken);
-        redisTemplate.delete(JwtRedisEnum.getKey(username, randomKey));
+        redisTemplate.delete(JwtRedisEnum.getTokenKey(username, randomKey));
 
-        logger.info("删除【{}】成功", JwtRedisEnum.getKey(username, randomKey));
+        redisTemplate.delete(JwtRedisEnum.getAuthenticationKey(username, randomKey));
+
+        logger.info("删除【{}】成功", JwtRedisEnum.getTokenKey(username, randomKey));
         logger.info("退出成功");
 
         return new ResponseEntity(HttpStatus.OK.value(), "退出成功！").data(null);

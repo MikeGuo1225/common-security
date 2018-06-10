@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 
 /**
@@ -54,6 +55,7 @@ public class MyUserDetailsService implements UserDetailsService/*, SocialUserDet
         String password = passwordEncoder.encode("123456");
         logger.info("数据库密码是：" + password);
         // 这个User不一定必须用SpringSecurity的，可以写一个自定义实现UserDetails接口的类，然后把是否锁定等判断逻辑写进去。
-        return new User(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_admin,ROLE_USER"));
+//        return new User(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_admin,ROLE_USER"));
+        return new MyUserDetails(password, username, 12, 1, new Date());
     }
 }

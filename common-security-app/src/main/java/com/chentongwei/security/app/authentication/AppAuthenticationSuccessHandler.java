@@ -51,15 +51,24 @@ public class AppAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
 
         // 判断是否开启允许多人同账号同时在线，若不允许的话则先删除之前的
         if (securityProperties.getJwt().isPreventsLogin()) {
-            // T掉同账号已登录的用户
-            batchDel(username);
+            // T掉同账号已登录的用户token信息
+            batchDel(JwtRedisEnum.getTokenKey(username, "*"));
+            // 删除同账号已登录的用户认证信息
+            batchDel(JwtRedisEnum.getAuthenticationKey(username, "*"));
         }
 
         // 存到redis
-        redisTemplate.opsForValue().set(JwtRedisEnum.getKey(username, randomKey),
+        redisTemplate.opsForValue().set(JwtRedisEnum.getTokenKey(username, randomKey),
                 token,
                 securityProperties.getJwt().getExpiration(),
                 TimeUnit.SECONDS);
+
+        // 将认证信息存到redis，方便后期业务用，也方便 JwtAuthenticationTokenFilter用
+        redisTemplate.opsForValue().set(JwtRedisEnum.getAuthenticationKey(username, randomKey),
+                JSON.toJSONString(authentication),
+                securityProperties.getJwt().getExpiration(),
+                TimeUnit.SECONDS
+        );
 
         Map<String, Object> resultMap = new HashMap();
         resultMap.put("authentication", authentication);
@@ -71,10 +80,10 @@ public class AppAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
     /**
      * 批量删除redis的key
      *
-     * @param username：username
+     * @param key：redis-key
      */
-    private void batchDel(String username){
-        Set<String> set = redisTemplate.keys(JwtRedisEnum.getKey(username, "*"));
+    private void batchDel(String key){
+        Set<String> set = redisTemplate.keys(key);
         Iterator<String> it = set.iterator();
         while(it.hasNext()){
             String keyStr = it.next();

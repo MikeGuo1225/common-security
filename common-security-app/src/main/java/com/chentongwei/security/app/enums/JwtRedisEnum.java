@@ -7,7 +7,15 @@ package com.chentongwei.security.app.enums;
  */
 public enum JwtRedisEnum {
 
-    KEY_PREFIX("jwt:")
+    /**
+     * token 的key前缀
+     */
+    TOKEN_KEY_PREFIX("jwt:"),
+
+    /***
+     * authentication的key
+     */
+    AUTHENTICATION_KEY_PREFIX("authentication:")
     ;
 
     private String value;
@@ -24,7 +32,17 @@ public enum JwtRedisEnum {
      * @param randomKey：xxxxxx
      * @return
      */
-    public static String getKey(String username, String randomKey) {
-        return KEY_PREFIX.value + username + ":" + randomKey;
+    public static String getTokenKey(String username, String randomKey) {
+        return TOKEN_KEY_PREFIX.value + username + ":" + randomKey;
+    }
+
+    /**
+     * 获取身份认证key
+     *
+     * @param username：用户名
+     * @return
+     */
+    public static String getAuthenticationKey(String username, String randomKey) {
+        return AUTHENTICATION_KEY_PREFIX.value + username + ":" + randomKey;
     }
 }

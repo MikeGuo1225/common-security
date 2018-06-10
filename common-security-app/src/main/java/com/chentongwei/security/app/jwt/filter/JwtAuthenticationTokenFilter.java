@@ -15,10 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -99,9 +97,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
 
         // 验证token是否存在（过期了也会消失）
-        Object token = redisTemplate.opsForValue().get(JwtRedisEnum.getKey(username, randomKey));
+        Object token = redisTemplate.opsForValue().get(JwtRedisEnum.getTokenKey(username, randomKey));
         if (Objects.isNull(token)) {
-            logger.info("Redis里没查到key【{}】对应的value！", JwtRedisEnum.getKey( username, randomKey));
+            logger.info("Redis里没查到key【{}】对应的value！", JwtRedisEnum.getTokenKey( username, randomKey));
             responseEntity(response, HttpStatus.UNAUTHORIZED.value(), "token已过期！");
             return;
         }
@@ -111,6 +109,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             logger.error("前端传来的token【{}】和redis里的token【{}】不一致！", authToken, token.toString());
             responseEntity(response, HttpStatus.UNAUTHORIZED.value(), "暂无权限！");
             return;
+        }
+
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            String authenticationStr = redisTemplate.opsForValue().get(JwtRedisEnum.getAuthenticationKey(username, randomKey));
+            Authentication authentication = JSON.parseObject(authenticationStr, Authentication.class);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         // token过期时间
@@ -126,34 +130,31 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             // token过期时间小于等于多少秒，自动刷新token
             if (surplusExpireTime <= securityProperties.getJwt().getAutoRefreshTokenExpiration()) {
                 // 1.删除之前的token
-                redisTemplate.delete(JwtRedisEnum.getKey(username, randomKey));
+                redisTemplate.delete(JwtRedisEnum.getTokenKey(username, randomKey));
 
                 //2.重新生成token
                 // 重新生成randomKey，放到header以及redis
-                randomKey = jwtTokenUtil.getRandomKey();
+                String newRandomKey = jwtTokenUtil.getRandomKey();
                 // 重新生成token，放到header以及redis
-                authToken = jwtTokenUtil.refreshToken(authToken, randomKey);
-                response.setHeader("Authorization", "Bearer " + authToken);
-                response.setHeader("randomKey", randomKey);
-                redisTemplate.opsForValue().set(JwtRedisEnum.getKey(username, randomKey),
-                        authToken,
+                String newAuthToken = jwtTokenUtil.refreshToken(authToken, newRandomKey);
+                response.setHeader("Authorization", "Bearer " + newAuthToken);
+                response.setHeader("randomKey", newRandomKey);
+                redisTemplate.opsForValue().set(JwtRedisEnum.getTokenKey(username, newRandomKey),
+                        newAuthToken,
                         securityProperties.getJwt().getExpiration(),
                         TimeUnit.SECONDS);
-                logger.info("重新生成token【{}】和randomKey【{}】", authToken, randomKey);
-            }
-        }
+                logger.info("重新生成token【{}】和randomKey【{}】", newAuthToken, newRandomKey);
 
-        // TODO JWTUserDetails的问题
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            // 避免了每次查询db，直接从jwt取
-            UserDetails userDetails = jwtTokenUtil.getUserFromToken(authToken);
+                // 取出老的authenticate放到redis里
+                String authentication = redisTemplate.opsForValue().get(JwtRedisEnum.getAuthenticationKey(username, randomKey));
 
-            if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                logger.info("authenticated user " + username + ", setting security context");
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                redisTemplate.opsForValue().set(JwtRedisEnum.getAuthenticationKey(username, newRandomKey),
+                        authentication,
+                        securityProperties.getJwt().getExpiration(),
+                        TimeUnit.SECONDS);
+
+                // 删除旧的认证信息
+                redisTemplate.delete(JwtRedisEnum.getAuthenticationKey(username, randomKey));
             }
         }
 
