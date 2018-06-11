@@ -16,13 +16,13 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @Configuration
 public class AppAuthenticationHandlerConfig {
 
-    @Bean
+    @Bean(name = "authenticationSuccessHandler")
     @ConditionalOnProperty(prefix = "com.chentongwei.security.app.success.handler", name = "enable", matchIfMissing = true)
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
        return new AppAuthenticationSuccessHandler();
     }
 
-    @Bean
+    @Bean(name = "authenticationFailureHandler")
     @ConditionalOnProperty(prefix = "com.chentongwei.security.app.failure.handler", name = "enable", matchIfMissing = true)
     public AuthenticationFailureHandler authenticationFailureHandler() {
         return new AppAuthenticationFailureHandler();
