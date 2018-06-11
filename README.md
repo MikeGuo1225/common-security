@@ -586,3 +586,68 @@ com.chentongwei.security.authentication.loginSuccessPage=http://www.tucaole.cn
   ```
 
   > PS：默认不允许iframe嵌套，防止csrf攻击。若有需要，则可以配置`disableStatus=1`即可。
+
+
+
+****
+
+## 三、common-security-app
+
+## 1、是什么？
+
+**基于`common-security-validate`，并在它基础上增加了JWT、登出操作、用户并发登录管理等操作；适用于前后端分离（redis存储数据）。**
+
+## 2、怎么用？
+
+- **1、后续所说的所有的配置项都配置到`security.properties`文件中。**
+- **2、导入jar包后，在你自己SpringBoot项目启动类上添加如下注解**
+
+`@ComponentScan(basePackages = {"com.chentongwei.security", "你自己的包名"})`
+
+## 3、具体用法？
+
+> PS：上面的`common-security-validate`里的所有配置全都可以使用。并在原基础上增加了如下三部分。
+>
+> 用户登录后会在Header里返回JWT生成的Token。此后任何需要认证才可访问的接口都需要携带此Token在Header中。
+
+- **3.1、JWT**
+
+```properties
+# JWT签名密钥，默认为defaultSecret
+com.chentongwei.security.jwt.secret=tucaole
+# JWT过期时间（秒），默认为3600s，一小时
+com.chentongwei.security.jwt.expiration=120
+# md5Key，每个token都对应一个唯一的md5key，默认值为randomKey
+com.chentongwei.security.jwt.md5Key=tucaolemd5
+```
+
+> PS：只是SpringSecurity整合的JWT，并没有融入Oauth2。
+
+- **3.2、自动刷新Token**
+
+```properties
+# 判断token还剩余多少秒到期后自动刷新Token，并放到header里。默认是60s,-1为不刷新
+com.chentongwei.security.jwt.autoRefreshTokenExpiration=60
+```
+
+- **3.3、并发登录**
+
+```properties
+# 判断是否开启允许多人同账号同时在线，若不允许的话则将上一个人T掉，默认false，不T掉，允许多人登录，true：T掉
+com.chentongwei.security.jwt.preventsLogin=true
+```
+
+- **3.4、退出登录**
+
+```properties
+# 内置了退出接口：/jwtLogout
+```
+
+- **3.5、认证成功/失败处理器重写**
+
+```properties
+# 是否要覆盖认证成功处理器，若要则指定enable=false。并且bean的name为“authenticationSuccessHandler”
+com.chentongwei.security.app.success.handler.enable=false
+# 是否要覆盖认证失败处理器，若要则指定enable=false。并且bean的name为“authenticationFailureHandler”
+com.chentongwei.security.app.failure.handler.enable=false
+```
