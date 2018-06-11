@@ -25,7 +25,7 @@ public class CoreAuthorizeConfigProvider implements AuthorizeConfigProvider {
         ).permitAll();
     }
 
-    private String[] getPermitUrls() {
+    public String[] getPermitUrls() {
         String permitUrls = securityProperties.getAuthorize().getPermitUrls();
         if (StringUtils.isNotEmpty(permitUrls) && StringUtils.isNotBlank(permitUrls)) {
             // 将配置文件读出来的url去除空白

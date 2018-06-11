@@ -12,9 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * 验证安全核心配置
  *
@@ -60,13 +57,6 @@ public class ValidateSecurityCoreConfig extends WebSecurityConfigurerAdapter {
             .and()
             .apply(smsCodeAuthenticationSecurityConfig)
             .and()
-            // 权限设置
-            .authorizeRequests()
-            // 任何请求都必须经过身份认证，排除如下
-            .antMatchers(
-                    getPermitUrls()
-            ).permitAll()
-            .and()
             // 先加上这句话，否则登录的时候会出现403错误码，Could not verify the provided CSRF token because your session was not found.
             .csrf().disable();
 
@@ -74,16 +64,5 @@ public class ValidateSecurityCoreConfig extends WebSecurityConfigurerAdapter {
         // 放到前面的话，后面在加载.antMatchers(getPermitUrls()).permitAll()的时候也会被认为无权限，
         // 因为前面已经做了其他任何方法都需要身份认证才能访问，SpringSecurity是有先后顺序的。
         authorizeConfigManager.config(http);
-    }
-
-    /**
-     * 获取所有的无需权限即可访问的urls
-     * @return
-     */
-    private String[] getPermitUrls() {
-        List<String> urls = new LinkedList<>();
-        urls.add(ValidateCodeConstants.DEFAULT_UNAUTHENTICATION_URL);
-        urls.add(DefaultLoginProcessingUrlEnum.MOBILE.url());
-        return urls.toArray(new String[urls.size()]);
     }
 }

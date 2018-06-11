@@ -1,0 +1,63 @@
+package com.chentongwei.security.app.properties.jwt;
+
+/**
+ * Jwt的基本配置
+ *
+ * @author chentongwei@bshf360.com 2018-06-08 13:11
+ */
+public class JwtProperties {
+    /** 默认前面秘钥 */
+    private String secret = "defaultSecret";
+
+    /** token默认有效期时长，1小时 */
+    private Long expiration = 3600L;
+
+    /** token的唯一标记，目前用于redis里存储，解决同账号，同时只能单用户登录的情况 */
+    private String md5Key = "randomKey";
+
+    /** token还剩余多长时间就自动刷新下，默认是60s */
+    private Long autoRefreshTokenExpiration = 60L;
+
+    /** 判断是否开启允许多人同账号同时在线，若不允许的话则将上一个人T掉，默认false，不T掉，允许多人登录，true：T掉 */
+    private boolean preventsLogin = false;
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    public Long getExpiration() {
+        return expiration;
+    }
+
+    public void setExpiration(Long expiration) {
+        this.expiration = expiration;
+    }
+
+    public String getMd5Key() {
+        return md5Key;
+    }
+
+    public void setMd5Key(String md5Key) {
+        this.md5Key = md5Key;
+    }
+
+    public Long getAutoRefreshTokenExpiration() {
+        return autoRefreshTokenExpiration;
+    }
+
+    public void setAutoRefreshTokenExpiration(Long autoRefreshTokenExpiration) {
+        this.autoRefreshTokenExpiration = autoRefreshTokenExpiration;
+    }
+
+    public boolean isPreventsLogin() {
+        return preventsLogin;
+    }
+
+    public void setPreventsLogin(boolean preventsLogin) {
+        this.preventsLogin = preventsLogin;
+    }
+}

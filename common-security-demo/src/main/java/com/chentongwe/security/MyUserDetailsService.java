@@ -12,6 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+
 
 /**
  * @author chentongwei@bshf360.com 2018-03-26 13:15
@@ -23,10 +26,14 @@ public class MyUserDetailsService implements UserDetailsService/*, SocialUserDet
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private HttpServletRequest request;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         logger.info("表单登录用户名：" + username);
+        Object tokenKey = request.getAttribute("tokenKey");
         return buildUser(username);
     }
 
@@ -48,6 +55,7 @@ public class MyUserDetailsService implements UserDetailsService/*, SocialUserDet
         String password = passwordEncoder.encode("123456");
         logger.info("数据库密码是：" + password);
         // 这个User不一定必须用SpringSecurity的，可以写一个自定义实现UserDetails接口的类，然后把是否锁定等判断逻辑写进去。
-        return new User(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_admin,ROLE_USER"));
+//        return new User(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_admin,ROLE_USER"));
+        return new MyUserDetails(password, username, 12, 1, new Date());
     }
 }
