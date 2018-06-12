@@ -57,6 +57,13 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         logger.info("请求路径：【{}】，请求方式为：【{}】", request.getRequestURI(), request.getMethod());
+
+        if (antPathMatcher.match("/favicon.ico", request.getRequestURI())) {
+            logger.info("jwt不拦截此路径：【{}】，请求方式为：【{}】", request.getRequestURI(), request.getMethod());
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // 排除路径，并且如果是options请求是cors跨域预请求，设置allow对应头信息
         String[] permitUrls = getPermitUrls();
         for (int i = 0, length = permitUrls.length; i < length; i ++) {

@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.chentongwei.security.app.enums.JwtRedisEnum;
 import com.chentongwei.security.app.jwt.util.JwtTokenUtil;
 import com.chentongwei.security.app.properties.SecurityProperties;
+import com.chentongwei.security.core.response.ResponseEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -46,9 +48,6 @@ public class AppAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
 
         logger.info("登录成功！");
 
-        response.setHeader("Authorization", "Bearer " + token);
-        response.setHeader("randomKey", randomKey);
-
         // 判断是否开启允许多人同账号同时在线，若不允许的话则先删除之前的
         if (securityProperties.getJwt().isPreventsLogin()) {
             // T掉同账号已登录的用户token信息
@@ -69,11 +68,9 @@ public class AppAuthenticationSuccessHandler extends SavedRequestAwareAuthentica
                 securityProperties.getJwt().getExpiration(),
                 TimeUnit.SECONDS
         );
-
-        Map<String, Object> resultMap = new HashMap();
-        resultMap.put("authentication", authentication);
+        response.setHeader("Authorization", "Bearer " + token);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JSON.toJSONString(resultMap));
+        response.getWriter().write(JSON.toJSONString(new ResponseEntity(HttpStatus.OK.value(), HttpStatus.OK.getReasonPhrase()).data(authentication)));
 
     }
 
