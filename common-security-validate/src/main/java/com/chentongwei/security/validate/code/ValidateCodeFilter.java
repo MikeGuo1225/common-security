@@ -2,9 +2,8 @@ package com.chentongwei.security.validate.code;
 
 import com.alibaba.fastjson.JSON;
 import com.chentongwei.security.core.response.ResponseEntity;
-import com.chentongwei.security.validate.authorize.ipurl.HttpRequestUtil;
+import com.chentongwei.security.validate.authorize.ipurl.IPUtil;
 import com.chentongwei.security.validate.authorize.ipurl.IPUrlLimit;
-import com.chentongwei.security.validate.constants.ValidateCodeConstants;
 import com.chentongwei.security.validate.enums.DefaultLoginProcessingUrlEnum;
 import com.chentongwei.security.validate.enums.ValidateCodeTypeEnum;
 import com.chentongwei.security.validate.exception.ValidateCodeException;
@@ -14,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
@@ -169,7 +167,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         String requestURI = request.getRequestURI();
 
         if (StringUtils.isNotBlank(ipValidateUrl) && ipValidateUrl.indexOf(requestURI) != -1) {
-            String ipAddr = HttpRequestUtil.getIpAddr(request);
+            String ipAddr = IPUtil.getIpAddr(request);
             String countKey = ipAddr + ":" + requestURI;
             logger.info("countKey：" + countKey);
             if (null != countMap.get(countKey) && countMap.get(countKey).isExpired()) {

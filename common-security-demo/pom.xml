@@ -19,13 +19,13 @@
     <dependencies>
         <dependency>
             <groupId>com.chentongwei</groupId>
-            <artifactId>common-security-app</artifactId>
-            <version>${common.security.app.version}</version>
+            <artifactId>common-security-sso</artifactId>
+            <version>${common.security.sso.version}</version>
         </dependency>
         <dependency>
             <groupId>com.chentongwei</groupId>
-            <artifactId>common-security-authorize</artifactId>
-            <version>${common.security.version}</version>
+            <artifactId>common-security-app</artifactId>
+            <version>${common.security.app.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -39,10 +39,10 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock</artifactId>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
