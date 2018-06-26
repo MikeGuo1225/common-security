@@ -7,7 +7,6 @@ common-security-core
 common-security-validate
 common-security-browser
 common-security-app
-common-security-authorize
 ````
 
 ****
