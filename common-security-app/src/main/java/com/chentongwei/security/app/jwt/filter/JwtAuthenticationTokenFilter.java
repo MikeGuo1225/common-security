@@ -160,8 +160,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                         securityProperties.getJwt().getExpiration(),
                         TimeUnit.SECONDS);
 
-                // 删除旧的认证信息
-                redisTemplate.delete(JwtRedisEnum.getAuthenticationKey(username, randomKey));
+                // 删除旧的认证信息,这里设置50s后自动到期，是因为在实际应用中有可能从authentication里获取用户唯一标识
+                redisTemplate.opsForValue().set(
+                        JwtRedisEnum.getAuthenticationKey(username, randomKey),
+                        authentication,
+                        50,
+                        TimeUnit.SECONDS);
             }
         }
 
