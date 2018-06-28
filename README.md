@@ -618,6 +618,8 @@ com.chentongwei.security.jwt.secret=tucaole
 com.chentongwei.security.jwt.expiration=120
 # md5Key，每个token都对应一个唯一的md5key，默认值为randomKey
 com.chentongwei.security.jwt.md5Key=tucaolemd5
+# GET请求是否需要进行Authentication请求头校验，true：默认校验；false：不拦截GET请求
+com.chentongwei.security.jwt.preventsGetMethod=false
 ```
 
 > PS：只是SpringSecurity整合的JWT，并没有融入Oauth2。

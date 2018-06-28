@@ -64,6 +64,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             return;
         }
 
+        if (! securityProperties.getJwt().isPreventsGetMethod()) {
+            if (Objects.equals(RequestMethod.GET.toString(), request.getMethod())) {
+                logger.info("jwt不拦截此路径因为开启了不拦截GET请求：【{}】，请求方式为：【{}】", request.getRequestURI(), request.getMethod());
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+
         // 排除路径，并且如果是options请求是cors跨域预请求，设置allow对应头信息
         String[] permitUrls = getPermitUrls();
         for (int i = 0, length = permitUrls.length; i < length; i ++) {

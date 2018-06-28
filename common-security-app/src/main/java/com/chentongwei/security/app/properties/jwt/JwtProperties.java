@@ -21,6 +21,9 @@ public class JwtProperties {
     /** 判断是否开启允许多人同账号同时在线，若不允许的话则将上一个人T掉，默认false，不T掉，允许多人登录，true：T掉 */
     private boolean preventsLogin = false;
 
+    /** GET请求是否需要进行Authentication请求头校验，true：默认校验；false：不拦截GET请求 */
+    private boolean preventsGetMethod = true;
+
     public String getSecret() {
         return secret;
     }
@@ -59,5 +62,13 @@ public class JwtProperties {
 
     public void setPreventsLogin(boolean preventsLogin) {
         this.preventsLogin = preventsLogin;
+    }
+
+    public boolean isPreventsGetMethod() {
+        return preventsGetMethod;
+    }
+
+    public void setPreventsGetMethod(boolean preventsGetMethod) {
+        this.preventsGetMethod = preventsGetMethod;
     }
 }
